@@ -187,7 +187,7 @@
     <!-- Text Input Section -->
     <div class="text-input-area">
       <label for="textInput">Enter Your Text (Supports Hindi, English & Emojis)</label>
-      <textarea id="textInput" placeholder="Type your text here... Use ##text## for white background highlighting" aria-label="Text input"></textarea>
+      <textarea id="textInput" placeholder="Type your text here... Use **text** for yellow highlighting" aria-label="Text input"></textarea>
       <div class="char-count"><span id="charCount">0</span> characters</div>
       
       <!-- Action Buttons -->
@@ -506,7 +506,29 @@
       }
 
       /**
-       * HIGHLIGHT PARSER - MODIFIED FOR ##text## with WHITE BACKGROUND
+       * SIMPLE TEXT WRAPPING - FIXED VERSION
+       */
+      function wrapText(text, ctx, maxWidth) {
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+          const word = words[i];
+          const width = ctx.measureText(currentLine + " " + word).width;
+          if (width < maxWidth) {
+            currentLine += " " + word;
+          } else {
+            lines.push(currentLine);
+            currentLine = word;
+          }
+        }
+        lines.push(currentLine);
+        return lines;
+      }
+
+      /**
+       * HIGHLIGHT PARSER - SIMPLE VERSION
        */
       function parseHighlights(text) {
         const lines = text.split('\n');
@@ -519,8 +541,8 @@
           let buffer = '';
           
           for (let i = 0; i < line.length; i++) {
-            // Check for ## pattern
-            if (line[i] === '#' && line[i + 1] === '#') {
+            // Check for ** pattern
+            if (line[i] === '*' && line[i + 1] === '*') {
               if (inHighlight) {
                 // End of highlight
                 if (buffer) {
@@ -528,7 +550,7 @@
                   buffer = '';
                 }
                 inHighlight = false;
-                i++; // Skip next #
+                i++; // Skip next *
               } else {
                 // Start of highlight
                 if (buffer) {
@@ -536,7 +558,7 @@
                   buffer = '';
                 }
                 inHighlight = true;
-                i++; // Skip next #
+                i++; // Skip next *
               }
             } else {
               buffer += line[i];
@@ -702,26 +724,10 @@
               currentX += ctx.measureText(' ').width;
             }
             
-            // Draw word with appropriate styling
-            if (part.highlight) {
-              // For highlighted text, draw white background and black text
-              const wordWidth = ctx.measureText(part.text).width;
-              const wordHeight = lineHeight;
-              
-              // Draw white background
-              ctx.fillStyle = '#FFFFFF';
-              ctx.fillRect(currentX, currentY, wordWidth, wordHeight);
-              
-              // Draw black text
-              ctx.fillStyle = '#000000';
-              ctx.fillText(part.text, currentX, currentY);
-              currentX += wordWidth;
-            } else {
-              // Normal text
-              ctx.fillStyle = textColor.value;
-              ctx.fillText(part.text, currentX, currentY);
-              currentX += ctx.measureText(part.text).width;
-            }
+            // Draw word with appropriate color
+            ctx.fillStyle = part.highlight ? '#FFFF00' : textColor.value;
+            ctx.fillText(part.text, currentX, currentY);
+            currentX += ctx.measureText(part.text).width;
           });
         });
 
@@ -895,26 +901,10 @@
                 currentX += ctx.measureText(' ').width;
               }
               
-              // Draw word with appropriate styling
-              if (part.highlight) {
-                // For highlighted text, draw white background and black text
-                const wordWidth = ctx.measureText(part.text).width;
-                const wordHeight = lineHeight;
-                
-                // Draw white background
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(currentX, currentY, wordWidth, wordHeight);
-                
-                // Draw black text
-                ctx.fillStyle = '#000000';
-                ctx.fillText(part.text, currentX, currentY);
-                currentX += wordWidth;
-              } else {
-                // Normal text
-                ctx.fillStyle = textColor.value;
-                ctx.fillText(part.text, currentX, currentY);
-                currentX += ctx.measureText(part.text).width;
-              }
+              // Draw word with appropriate color
+              ctx.fillStyle = part.highlight ? '#FFFF00' : textColor.value;
+              ctx.fillText(part.text, currentX, currentY);
+              currentX += ctx.measureText(part.text).width;
             });
           });
 
@@ -1117,10 +1107,15 @@
         }
       }
 
-      // Test with new syntax
-      // textInput.value = "##hello## world";
+      // Test with simple text
+      // textInput.value = "**hello**";
       // textInput.dispatchEvent(new Event('input'));
     });
   </script>
 </body>
 </html>
+
+
+
+
+##hello## is type se aaye usake pichhe white background ki patti add karo
