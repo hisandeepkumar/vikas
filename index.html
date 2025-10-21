@@ -221,6 +221,10 @@
     .slider-container input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #5b86e5; cursor: pointer; border: none; }
     .brightness-value { color: #f0f0f0; font-weight: 500; min-width: 40px; text-align: center; }
     
+    /* Vignette Control */
+    .vignette-control { margin-bottom: 18px; }
+    .vignette-control h3 { color: #f0f0f0; margin-bottom: 12px; font-size: 1.2rem; font-weight: 500; }
+    
     @media (max-width:768px) { 
       .container { padding:16px; } 
       .header h1 { font-size:22px; } 
@@ -309,6 +313,17 @@
         <input type="range" id="brightnessSlider" min="0" max="100" value="50">
         <i class="fas fa-sun" style="color: #ffd700;"></i>
         <span class="brightness-value" id="brightnessValue">50%</span>
+      </div>
+    </div>
+
+    <!-- Vignette Control -->
+    <div class="vignette-control">
+      <h3>Vignette Effect</h3>
+      <div class="slider-container">
+        <i class="fas fa-circle" style="color: #ffffff;"></i>
+        <input type="range" id="vignetteSlider" min="0" max="100" value="0">
+        <i class="fas fa-circle" style="color: #000000;"></i>
+        <span class="brightness-value" id="vignetteValue">0%</span>
       </div>
     </div>
 
@@ -403,6 +418,10 @@
       const brightnessSlider = document.getElementById('brightnessSlider');
       const brightnessValue = document.getElementById('brightnessValue');
       
+      // Vignette control
+      const vignetteSlider = document.getElementById('vignetteSlider');
+      const vignetteValue = document.getElementById('vignetteValue');
+      
       // Application State
       let currentMode = 'text';
       let selectedImage = null;
@@ -410,6 +429,7 @@
       let originalImageDimensions = { width: 0, height: 0 };
       let selectedPlatform = 'youtube';
       let brightness = 0.5;
+      let vignette = 0;
       
       // Platform configurations
       const platforms = {
@@ -498,6 +518,15 @@
       brightnessSlider.addEventListener('input', () => {
         brightness = brightnessSlider.value / 100;
         brightnessValue.textContent = `${brightnessSlider.value}%`;
+        if (selectedImage || textInput.value.trim()) {
+          updatePreview();
+        }
+      });
+      
+      // Vignette slider
+      vignetteSlider.addEventListener('input', () => {
+        vignette = vignetteSlider.value / 100;
+        vignetteValue.textContent = `${vignetteSlider.value}%`;
         if (selectedImage || textInput.value.trim()) {
           updatePreview();
         }
@@ -609,12 +638,12 @@
         }
       });
 
-      // Click to Open File Selector - FIXED: Removed resetFileInput call
+      // Click to Open File Selector
       uploadArea.addEventListener('click', () => {
         imageInput.click();
       });
       
-      // Handle File Selection - FIXED: Now Works Every Time
+      // Handle File Selection
       imageInput.addEventListener('change', (e) => { 
         if (e.target.files && e.target.files.length) {
           handleImageSelection(e.target.files[0]);
@@ -913,6 +942,11 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.globalCompositeOperation = 'source-over';
             
+            // Apply vignette effect
+            if (vignette > 0) {
+              applyVignette(ctx, canvas);
+            }
+            
             // Continue with text rendering
             renderText();
           };
@@ -928,8 +962,23 @@
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.globalCompositeOperation = 'source-over';
           
+          // Apply vignette effect
+          if (vignette > 0) {
+            applyVignette(ctx, canvas);
+          }
+          
           // Render text
           renderText();
+        }
+        
+        function applyVignette(ctx, canvas) {
+          // Create vignette effect on bottom and right sides
+          const gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0);
+          gradient.addColorStop(0, `rgba(0, 0, 0, ${vignette})`);
+          gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
+          
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         
         function renderText() {
@@ -1045,7 +1094,7 @@
         charCount.textContent = text.length;
         autoResizeTextarea(textInput);
         
-        // FIXED: Don't reset selectedImage when text changes
+        // Don't reset selectedImage when text changes
         if (text.trim().length > 0 || selectedImage) {
           downloadBtn.disabled = false;
           previewContainer.style.display = 'flex';
@@ -1158,6 +1207,16 @@
             ctx.fillStyle = `rgba(0, 0, 0, ${1 - brightness})`;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.globalCompositeOperation = 'source-over';
+            
+            // Apply vignette effect
+            if (vignette > 0) {
+              const gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0);
+              gradient.addColorStop(0, `rgba(0, 0, 0, ${vignette})`);
+              gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
+              
+              ctx.fillStyle = gradient;
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
           } else {
             // Draw gradient background if no image
             ctx.fillStyle = bgColorInput.value;
@@ -1168,6 +1227,16 @@
             ctx.fillStyle = `rgba(0, 0, 0, ${1 - brightness})`;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.globalCompositeOperation = 'source-over';
+            
+            // Apply vignette effect
+            if (vignette > 0) {
+              const gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0);
+              gradient.addColorStop(0, `rgba(0, 0, 0, ${vignette})`);
+              gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
+              
+              ctx.fillStyle = gradient;
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
           }
 
           updateProgress(40);
