@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thumbnail Generator (Free & Professional)</title>
+  <title>Thumbnail Generator (Fast, Free & Secure)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -12,7 +12,7 @@
       font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
       min-height: 100vh; display:flex; justify-content:center; align-items:center; padding:24px;
       color:#f0f0f0;
-      background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('images/background.jpg');
+      background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
       background-size:cover; background-position:center; background-attachment:fixed;
     }
     .container {
@@ -205,6 +205,12 @@
     .btn:disabled { opacity:0.5; cursor:not-allowed; }
     .footer { margin-top:18px; text-align:center; color:rgba(255,255,255,0.7); font-size:14px; padding:12px; border-top:1px solid rgba(255,255,255,0.06); }
     
+    /* Color Options */
+    .color-options { display:flex; gap:15px; margin-bottom:18px; flex-wrap:wrap; justify-content: center; }
+    .color-option { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .color-option label { color: #f0f0f0; font-size: 0.9rem; }
+    .color-option input[type="color"] { width:50px; height:40px; border:2px solid rgba(255,255,255,0.12); border-radius:8px; cursor:pointer; background:transparent; }
+    
     /* Brightness Control */
     .brightness-control { margin-bottom: 18px; }
     .brightness-control h3 { color: #f0f0f0; margin-bottom: 12px; font-size: 1.2rem; font-weight: 500; }
@@ -214,12 +220,6 @@
     .slider-container input[type="range"]::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #5b86e5; cursor: pointer; }
     .slider-container input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #5b86e5; cursor: pointer; border: none; }
     .brightness-value { color: #f0f0f0; font-weight: 500; min-width: 40px; text-align: center; }
-    
-    /* Color Options */
-    .color-options { display:flex; gap:15px; margin-bottom:18px; flex-wrap:wrap; justify-content: center; }
-    .color-option { display:flex; flex-direction:column; align-items:center; gap:8px; }
-    .color-option label { color: #f0f0f0; font-size: 0.9rem; }
-    .color-option input[type="color"] { width:50px; height:40px; border:2px solid rgba(255,255,255,0.12); border-radius:8px; cursor:pointer; background:transparent; }
     
     @media (max-width:768px) { 
       .container { padding:16px; } 
@@ -295,6 +295,10 @@
         <label for="highlightColor">Highlight Color</label>
         <input type="color" id="highlightColor" value="#ffff00">
       </div>
+      <div class="color-option">
+        <label for="bgColor">Background Color</label>
+        <input type="color" id="bgColor" value="#071E3A">
+      </div>
     </div>
 
     <!-- Brightness Control -->
@@ -336,17 +340,13 @@
 
       <div class="overlay-preview watermark-preview">
         <h3>Vikas Jajim Logo (Top Right)</h3>
-        <div style="width:120px;height:60px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:8px;">
-          <i class="fas fa-copyright" style="font-size:30px;color:rgba(255,255,255,0.6);"></i>
-        </div>
-        <span>Vikas Jajim logo will be added to the top right</span>
+        <img id="uiLogo" src="vikas_jajim_logo.png" alt="Logo" style="width:120px;height:60px;object-fit:contain;">
+        <span>Logo will be added to the top right corner</span>
       </div>
 
       <div class="overlay-preview watermark-preview">
         <h3>Vikas Jajim Watermark (Center)</h3>
-        <div style="width:120px;height:60px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:8px;">
-          <i class="fas fa-trademark" style="font-size:30px;color:rgba(255,255,255,0.6);"></i>
-        </div>
+        <img id="uiWatermark" src="vikas_jajim_watermark.png" alt="Watermark" style="width:120px;height:60px;object-fit:contain;">
         <span>Watermark will be added to the center with low opacity</span>
       </div>
     </div>
@@ -377,6 +377,8 @@
       const progressContainer = document.getElementById('progressContainer');
       const progressBar = document.getElementById('progressBar');
       const platformLogoPreview = document.getElementById('platformLogoPreview');
+      const uiLogoImg = document.getElementById('uiLogo');
+      const uiWatermarkImg = document.getElementById('uiWatermark');
       
       // Action buttons
       const copyBtn = document.getElementById('copyBtn');
@@ -395,6 +397,7 @@
       // Color options
       const textColorInput = document.getElementById('textColor');
       const highlightColorInput = document.getElementById('highlightColor');
+      const bgColorInput = document.getElementById('bgColor');
       
       // Brightness control
       const brightnessSlider = document.getElementById('brightnessSlider');
@@ -480,6 +483,12 @@
       });
       
       highlightColorInput.addEventListener('input', () => {
+        if (selectedImage || textInput.value.trim()) {
+          updatePreview();
+        }
+      });
+      
+      bgColorInput.addEventListener('input', () => {
         if (selectedImage || textInput.value.trim()) {
           updatePreview();
         }
@@ -917,10 +926,7 @@
           img.src = URL.createObjectURL(selectedImage);
         } else {
           // Draw gradient background if no image
-          const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-          gradient.addColorStop(0, '#071E3A');
-          gradient.addColorStop(1, '#1F3C60');
-          ctx.fillStyle = gradient;
+          ctx.fillStyle = bgColorInput.value;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           
           // Apply brightness adjustment
@@ -1006,23 +1012,35 @@
           ctx.fillText(iconChar, logoMargin, logoMargin);
 
           // Draw Vikas Jajim logo (top right)
-          const logoWidth = canvas.width * 0.15;
-          const logoHeight = logoWidth * 0.5;
-          const logoRightMargin = canvas.width * 0.03;
-          ctx.fillStyle = '#ffffff';
-          ctx.font = `bold ${logoHeight * 0.5}px 'Inter'`;
-          ctx.textAlign = 'right';
-          ctx.fillText('VIKAS JAJIM', canvas.width - logoRightMargin, logoMargin + logoHeight/2);
-          ctx.textAlign = 'left';
+          if (uiLogoImg && uiLogoImg.src) {
+            const logoImg = new Image();
+            logoImg.onload = function() {
+              const logoWidth = canvas.width * 0.15;
+              const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
+              const logoRightMargin = canvas.width * 0.03;
+              const logoY = logoMargin;
+              const logoX = canvas.width - logoWidth - logoRightMargin;
+              ctx.globalAlpha = 0.9;
+              ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+              ctx.globalAlpha = 1.0;
+            };
+            logoImg.src = uiLogoImg.src;
+          }
 
           // Draw watermark (center)
-          ctx.globalAlpha = 0.2;
-          ctx.fillStyle = '#ffffff';
-          ctx.font = `300 ${canvas.height * 0.1}px 'Inter'`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('VIKAS JAJIM', canvas.width / 2, canvas.height / 2);
-          ctx.globalAlpha = 1.0;
+          if (uiWatermarkImg && uiWatermarkImg.src) {
+            const watermarkImg = new Image();
+            watermarkImg.onload = function() {
+              const wmWidth = canvas.width * 0.25;
+              const wmHeight = (watermarkImg.height * wmWidth) / watermarkImg.width;
+              const wmX = (canvas.width - wmWidth) / 2;
+              const wmY = (canvas.height - wmHeight) / 2;
+              ctx.globalAlpha = 0.28;
+              ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
+              ctx.globalAlpha = 1.0;
+            };
+            watermarkImg.src = uiWatermarkImg.src;
+          }
 
           // Set preview image
           imagePreview.src = canvas.toDataURL('image/png');
@@ -1151,10 +1169,7 @@
             ctx.globalCompositeOperation = 'source-over';
           } else {
             // Draw gradient background if no image
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#071E3A');
-            gradient.addColorStop(1, '#1F3C60');
-            ctx.fillStyle = gradient;
+            ctx.fillStyle = bgColorInput.value;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             // Apply brightness adjustment
@@ -1240,24 +1255,52 @@
           
           ctx.fillText(iconChar, logoMargin, logoMargin);
 
-          // Draw Vikas Jajim logo (top right)
-          const logoWidth = canvas.width * 0.15;
-          const logoHeight = logoWidth * 0.5;
-          const logoRightMargin = canvas.width * 0.03;
-          ctx.fillStyle = '#ffffff';
-          ctx.font = `bold ${logoHeight * 0.5}px 'Inter'`;
-          ctx.textAlign = 'right';
-          ctx.fillText('VIKAS JAJIM', canvas.width - logoRightMargin, logoMargin + logoHeight/2);
-          ctx.textAlign = 'left';
+          // Load and draw Vikas Jajim logo (top right)
+          let logoImg = null;
+          const logoSrc = uiLogoImg && uiLogoImg.src ? uiLogoImg.src : null;
+          
+          if (logoSrc) { 
+            try { 
+              logoImg = await loadImage(logoSrc, true); 
+            } catch (e) { 
+              console.warn('Logo failed to load', e.message); 
+              logoImg = null; 
+            } 
+          }
+          
+          if (logoImg) {
+            const logoWidth = canvas.width * 0.15;
+            const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
+            const logoRightMargin = canvas.width * 0.03;
+            const logoY = logoMargin;
+            const logoX = canvas.width - logoWidth - logoRightMargin;
+            ctx.globalAlpha = 0.9;
+            ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+            ctx.globalAlpha = 1.0;
+          }
 
-          // Draw watermark (center)
-          ctx.globalAlpha = 0.2;
-          ctx.fillStyle = '#ffffff';
-          ctx.font = `300 ${canvas.height * 0.1}px 'Inter'`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('VIKAS JAJIM', canvas.width / 2, canvas.height / 2);
-          ctx.globalAlpha = 1.0;
+          // Load and draw watermark (center)
+          let watermarkImg = null;
+          const watermarkSrc = uiWatermarkImg && uiWatermarkImg.src ? uiWatermarkImg.src : null;
+          
+          if (watermarkSrc) { 
+            try { 
+              watermarkImg = await loadImage(watermarkSrc, true); 
+            } catch (e) { 
+              console.warn('Watermark failed to load', e.message); 
+              watermarkImg = null; 
+            } 
+          }
+          
+          if (watermarkImg) {
+            const wmWidth = canvas.width * 0.25;
+            const wmHeight = (watermarkImg.height * wmWidth) / watermarkImg.width;
+            const wmX = (canvas.width - wmWidth) / 2;
+            const wmY = (canvas.height - wmHeight) / 2;
+            ctx.globalAlpha = 0.28;
+            ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
+            ctx.globalAlpha = 1.0;
+          }
 
           updateProgress(90);
 
