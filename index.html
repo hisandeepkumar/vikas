@@ -638,12 +638,7 @@
         }
       });
 
-      // Click to Open File Selector
-      uploadArea.addEventListener('click', () => {
-        imageInput.click();
-      });
-      
-      // Handle File Selection
+      // Handle File Selection - FIXED: Removed the duplicate click handler
       imageInput.addEventListener('change', (e) => { 
         if (e.target.files && e.target.files.length) {
           handleImageSelection(e.target.files[0]);
