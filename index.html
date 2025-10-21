@@ -587,11 +587,6 @@
         else return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
       }
 
-      // Reset file input to allow same file selection again
-      function resetFileInput() {
-        imageInput.value = '';
-      }
-
       // Drag and Drop Event Handlers
       ['dragenter','dragover'].forEach(ev => {
         uploadArea.addEventListener(ev, e => { 
@@ -614,9 +609,8 @@
         }
       });
 
-      // Click to Open File Selector - RESET Input First
+      // Click to Open File Selector - FIXED: Removed resetFileInput call
       uploadArea.addEventListener('click', () => {
-        resetFileInput();
         imageInput.click();
       });
       
@@ -680,7 +674,6 @@
         stopVibration();
         selectedImage = null;
         originalImageDimensions = { width: 0, height: 0 };
-        resetFileInput();
       }
 
       function startVibration(){ if('vibrate' in navigator){ vibrationInterval = setInterval(()=>navigator.vibrate(50),2000); } }
@@ -1051,11 +1044,9 @@
         const text = textInput.value;
         charCount.textContent = text.length;
         autoResizeTextarea(textInput);
-        if (text.trim().length > 0) {
-          currentMode = 'text';
-          fileInfoDisplay.style.display = 'none';
-          sizeInfoDisplay.style.display = 'none';
-          selectedImage = null;
+        
+        // FIXED: Don't reset selectedImage when text changes
+        if (text.trim().length > 0 || selectedImage) {
           downloadBtn.disabled = false;
           previewContainer.style.display = 'flex';
           overlaysContainer.style.display = 'flex';
