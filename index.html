@@ -908,6 +908,17 @@
         el.style.height = (el.scrollHeight + 2) + 'px';
       }
 
+      // NEW: Consistent logo sizing function
+      function getLogoSize(canvas) {
+        // Use the smaller dimension to ensure consistent size across all aspect ratios
+        const baseSize = Math.min(canvas.width, canvas.height);
+        return {
+          platform: baseSize * 0.08, // Platform logo size
+          brand: baseSize * 0.15,    // Vikas Jajim logo size
+          margin: baseSize * 0.02    // Margin from edges
+        };
+      }
+
       function updatePreview() {
         const text = textInput.value;
         const platform = platforms[selectedPlatform];
@@ -930,6 +941,9 @@
         }
         
         const ctx = canvas.getContext('2d');
+
+        // Get consistent logo sizes
+        const logoSize = getLogoSize(canvas);
 
         // Draw background
         if (selectedImage) {
@@ -1019,8 +1033,8 @@
           ctx.textAlign = 'left';
           ctx.textBaseline = 'top';
 
-          // Calculate safe areas
-          const logoAreaHeight = canvas.height * 0.15;
+          // Calculate safe areas (consider logo areas)
+          const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
           const bottomAreaHeight = canvas.height * 0.10;
           const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
           const paddingSides = canvas.width * 0.10;
@@ -1055,11 +1069,9 @@
             });
           });
 
-          // Draw platform logo (top left)
-          const logoSize = canvas.height * 0.08;
-          const logoMargin = canvas.width * 0.03;
+          // Draw platform logo (top left) - CONSISTENT SIZE
           ctx.fillStyle = platform.logo.color;
-          ctx.font = `900 ${logoSize}px FontAwesome`;
+          ctx.font = `900 ${logoSize.platform}px FontAwesome`;
           
           // Set the correct icon based on platform
           let iconChar;
@@ -1083,17 +1095,18 @@
               iconChar = '';
           }
           
-          ctx.fillText(iconChar, logoMargin, logoMargin);
+          ctx.fillText(iconChar, logoSize.margin, logoSize.margin);
 
-          // Draw Vikas Jajim logo (top right)
+          // Draw Vikas Jajim logo (top right) - CONSISTENT SIZE
           if (uiLogoImg && uiLogoImg.src) {
             const logoImg = new Image();
             logoImg.onload = function() {
-              const logoWidth = canvas.width * 0.15;
+              // Calculate dimensions to maintain aspect ratio
+              const logoWidth = logoSize.brand;
               const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
-              const logoRightMargin = canvas.width * 0.03;
-              const logoY = logoMargin;
-              const logoX = canvas.width - logoWidth - logoRightMargin;
+              const logoX = canvas.width - logoWidth - logoSize.margin;
+              const logoY = logoSize.margin;
+              
               ctx.globalAlpha = 0.9;
               ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
               ctx.globalAlpha = 1.0;
@@ -1306,6 +1319,9 @@
 
           updateProgress(15);
 
+          // Get consistent logo sizes for final thumbnail
+          const logoSize = getLogoSize(canvas);
+
           // Draw background
           if (selectedImage) {
             const imgObjUrl = URL.createObjectURL(selectedImage);
@@ -1401,8 +1417,8 @@
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
 
-            // Calculate safe areas
-            const logoAreaHeight = canvas.height * 0.15;
+            // Calculate safe areas (consider logo areas)
+            const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
             const bottomAreaHeight = canvas.height * 0.10;
             const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
             const paddingSides = canvas.width * 0.10;
@@ -1440,11 +1456,9 @@
 
           updateProgress(70);
 
-          // Draw platform logo (top left)
-          const logoSize = canvas.height * 0.08;
-          const logoMargin = canvas.width * 0.03;
+          // Draw platform logo (top left) - CONSISTENT SIZE
           ctx.fillStyle = platform.logo.color;
-          ctx.font = `900 ${logoSize}px FontAwesome`;
+          ctx.font = `900 ${logoSize.platform}px FontAwesome`;
           
           // Set the correct icon based on platform
           let iconChar;
@@ -1468,9 +1482,9 @@
               iconChar = '';
           }
           
-          ctx.fillText(iconChar, logoMargin, logoMargin);
+          ctx.fillText(iconChar, logoSize.margin, logoSize.margin);
 
-          // Load and draw Vikas Jajim logo (top right)
+          // Load and draw Vikas Jajim logo (top right) - CONSISTENT SIZE
           let logoImg = null;
           const logoSrc = uiLogoImg && uiLogoImg.src ? uiLogoImg.src : null;
           
@@ -1484,11 +1498,12 @@
           }
           
           if (logoImg) {
-            const logoWidth = canvas.width * 0.15;
+            // Calculate dimensions to maintain aspect ratio
+            const logoWidth = logoSize.brand;
             const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
-            const logoRightMargin = canvas.width * 0.03;
-            const logoY = logoMargin;
-            const logoX = canvas.width - logoWidth - logoRightMargin;
+            const logoX = canvas.width - logoWidth - logoSize.margin;
+            const logoY = logoSize.margin;
+            
             ctx.globalAlpha = 0.9;
             ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
             ctx.globalAlpha = 1.0;
