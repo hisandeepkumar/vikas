@@ -433,7 +433,7 @@
           <i class="fab fa-facebook"></i> Facebook Post (16:9)
         </button>
         <button class="platform-btn" data-platform="twitter">
-          <i class="fab fa-x"></i> Twitter Post (16:9)
+          <i class="fas fa-x"></i> Twitter Post (16:9)
         </button>
         <button class="platform-btn" data-platform="linkedin">
           <i class="fab fa-linkedin"></i> LinkedIn Post (1:1)
@@ -443,6 +443,9 @@
         </button>
         <button class="platform-btn" data-platform="whatsapp-status">
           <i class="fab fa-whatsapp"></i> WhatsApp Status (9:16)
+        </button>
+        <button class="platform-btn" data-platform="whatsapp-square">
+          <i class="fab fa-whatsapp"></i> WhatsApp Square (1:1)
         </button>
         <button class="platform-btn" data-platform="youtube-square">
           <i class="fab fa-youtube"></i> YouTube Square (1:1)
@@ -621,36 +624,29 @@
     <div class="platform-logos">
       <div class="platform-logo youtube">
         <i class="fab fa-youtube"></i>
-        <span>/Vikas Jajim</span>
       </div>
       <div class="platform-logo instagram">
         <i class="fab fa-instagram"></i>
-        <span>/Vikas Jajim</span>
       </div>
       <div class="platform-logo facebook">
         <i class="fab fa-facebook"></i>
-        <span>/Vikas Jajim</span>
       </div>
       <div class="platform-logo x">
-        <i class="fab fa-x-twitter"></i>
-        <span>/Vikas Jajim</span>
+        <i class="fas fa-x"></i>
       </div>
       <div class="platform-logo tiktok">
         <i class="fab fa-tiktok"></i>
-        <span>/Vikas Jajim</span>
       </div>
       <div class="platform-logo linkedin">
         <i class="fab fa-linkedin"></i>
-        <span>/Vikas Jajim</span>
       </div>
       <div class="platform-logo whatsapp">
         <i class="fab fa-whatsapp"></i>
-        <span>/Vikas Jajim</span>
       </div>
       <div class="platform-logo vikas-jajim">
         <img src="vikas_jajim_logo.png" alt="Vikas Jajim">
-        <span>/Vikas Jajim</span>
       </div>
+      <div class="platform-text">/Vikas Jajim</div>
     </div>
 
     <!-- Telegram Status -->
@@ -806,7 +802,7 @@
         twitter: { 
           name: 'Twitter', 
           ratio: [16, 9], 
-          logo: { icon: 'fab fa-x-twitter', color: '#000000' },
+          logo: { icon: 'fas fa-x', color: '#000000' },
           size: { width: 1200, height: 675 }
         },
         linkedin: { 
@@ -827,6 +823,12 @@
           logo: { icon: 'fab fa-whatsapp', color: '#25D366' },
           size: { width: 1080, height: 1920 }
         },
+        'whatsapp-square': { 
+          name: 'WhatsApp Square', 
+          ratio: [1, 1], 
+          logo: { icon: 'fab fa-whatsapp', color: '#25D366' },
+          size: { width: 1080, height: 1080 }
+        },
         'youtube-square': { 
           name: 'YouTube Square', 
           ratio: [1, 1], 
@@ -835,12 +837,12 @@
         }
       };
 
-      // NEW: Platform logos for bottom with /Vikas Jajim text
+      // NEW: Platform logos for bottom - only logos, no text
       const platformLogos = [
         { name: 'youtube', icon: 'fab fa-youtube', color: '#FF0000' },
         { name: 'instagram', icon: 'fab fa-instagram', color: '#E4405F' },
         { name: 'facebook', icon: 'fab fa-facebook', color: '#1877F2' },
-        { name: 'x', icon: 'fab fa-x-twitter', color: '#000000' },
+        { name: 'x', icon: 'fas fa-x', color: '#000000' },
         { name: 'tiktok', icon: 'fab fa-tiktok', color: '#000000' },
         { name: 'linkedin', icon: 'fab fa-linkedin', color: '#0A66C2' },
         { name: 'whatsapp', icon: 'fab fa-whatsapp', color: '#25D366' }
@@ -1414,16 +1416,16 @@
         ctx.shadowBlur = 0;
       }
 
-      // NEW: Draw bottom platform logos with /Vikas Jajim text in same line
+      // NEW: Draw bottom platform logos with /Vikas Jajim text only once at the end
       function drawBottomPlatformLogos(ctx, canvas) {
         const logoSize = getLogoSize(canvas);
         const bottomLogoSize = logoSize.bottomLogo;
         const margin = bottomLogoSize * 0.5;
         
         // Calculate total width needed
-        const totalWidth = (platformLogos.length * (bottomLogoSize * 4)) + ((platformLogos.length - 1) * margin);
+        const totalWidth = (platformLogos.length * bottomLogoSize) + ((platformLogos.length - 1) * margin) + (bottomLogoSize * 2);
         let startX = (canvas.width - totalWidth) / 2;
-        const startY = canvas.height - (bottomLogoSize * 3);
+        const startY = canvas.height - (bottomLogoSize * 2.5);
         
         // Draw platform logos
         platformLogos.forEach(platform => {
@@ -1436,7 +1438,7 @@
             case 'youtube': iconChar = ''; break;
             case 'instagram': iconChar = ''; break;
             case 'facebook': iconChar = ''; break;
-            case 'x': iconChar = ''; break; // Using X icon
+            case 'x': iconChar = ''; break; // Using "fas fa-x" icon
             case 'tiktok': iconChar = '勵'; break;
             case 'linkedin': iconChar = ''; break;
             case 'whatsapp': iconChar = ''; break;
@@ -1444,16 +1446,10 @@
           }
           
           ctx.fillText(iconChar, startX, startY);
-          
-          // Draw platform name and /Vikas Jajim in same line
-          ctx.font = `400 ${bottomLogoSize * 0.5}px 'Inter', sans-serif`;
-          ctx.textAlign = 'left';
-          ctx.fillText(` /Vikas Jajim`, startX + bottomLogoSize * 1.2, startY);
-          
-          startX += (bottomLogoSize * 4) + margin;
+          startX += bottomLogoSize + margin;
         });
         
-        // Draw Vikas Jajim logo with text
+        // Draw Vikas Jajim logo
         if (uiLogoImg && uiLogoImg.src) {
           const logoImg = new Image();
           logoImg.onload = function() {
@@ -1465,12 +1461,14 @@
             ctx.drawImage(logoImg, startX, logoY, logoWidth, logoHeight);
             ctx.globalAlpha = 1.0;
             
-            // Draw /Vikas Jajim text next to logo
-            ctx.font = `400 ${bottomLogoSize * 0.5}px 'Inter', sans-serif`;
-            ctx.fillText(` /Vikas Jajim`, startX + logoWidth * 1.1, startY);
+            startX += logoWidth + margin;
           };
           logoImg.src = uiLogoImg.src;
         }
+        
+        // Draw /Vikas Jajim text only once at the end
+        ctx.font = `400 ${bottomLogoSize * 0.6}px 'Inter', sans-serif`;
+        ctx.fillText('/Vikas Jajim', startX, startY);
       }
 
       function updatePreview() {
@@ -1650,7 +1648,7 @@
               iconChar = ''; 
               break;
             case 'twitter': 
-              iconChar = ''; 
+              iconChar = ''; 
               break;
             case 'linkedin': 
               iconChar = ''; 
@@ -1659,6 +1657,7 @@
               iconChar = '勵'; 
               break;
             case 'whatsapp-status': 
+            case 'whatsapp-square': 
               iconChar = ''; 
               break;
             case 'youtube-square': 
@@ -1702,7 +1701,7 @@
             watermarkImg.src = uiWatermarkImg.src;
           }
 
-          // NEW: Draw bottom platform logos with /Vikas Jajim text in same line
+          // NEW: Draw bottom platform logos with /Vikas Jajim text only once at the end
           drawBottomPlatformLogos(ctx, canvas);
 
           // Set preview image
@@ -1876,16 +1875,16 @@
         }, 5000);
       }
 
-      // NEW: Draw bottom platform logos for final post with /Vikas Jajim text in same line
+      // NEW: Draw bottom platform logos for final post with /Vikas Jajim text only once at the end
       function drawBottomPlatformLogosFinal(ctx, canvas) {
         const logoSize = getLogoSize(canvas);
         const bottomLogoSize = logoSize.bottomLogo;
         const margin = bottomLogoSize * 0.5;
         
         // Calculate total width needed
-        const totalWidth = (platformLogos.length * (bottomLogoSize * 4)) + ((platformLogos.length - 1) * margin);
+        const totalWidth = (platformLogos.length * bottomLogoSize) + ((platformLogos.length - 1) * margin) + (bottomLogoSize * 2);
         let startX = (canvas.width - totalWidth) / 2;
-        const startY = canvas.height - (bottomLogoSize * 3);
+        const startY = canvas.height - (bottomLogoSize * 2.5);
         
         // Draw platform logos
         platformLogos.forEach(platform => {
@@ -1898,7 +1897,7 @@
             case 'youtube': iconChar = ''; break;
             case 'instagram': iconChar = ''; break;
             case 'facebook': iconChar = ''; break;
-            case 'x': iconChar = ''; break; // Using X icon
+            case 'x': iconChar = ''; break; // Using "fas fa-x" icon
             case 'tiktok': iconChar = '勵'; break;
             case 'linkedin': iconChar = ''; break;
             case 'whatsapp': iconChar = ''; break;
@@ -1906,16 +1905,10 @@
           }
           
           ctx.fillText(iconChar, startX, startY);
-          
-          // Draw platform name and /Vikas Jajim in same line
-          ctx.font = `400 ${bottomLogoSize * 0.5}px 'Inter', sans-serif`;
-          ctx.textAlign = 'left';
-          ctx.fillText(` /Vikas Jajim`, startX + bottomLogoSize * 1.2, startY);
-          
-          startX += (bottomLogoSize * 4) + margin;
+          startX += bottomLogoSize + margin;
         });
         
-        // Draw Vikas Jajim logo with text
+        // Draw Vikas Jajim logo
         if (uiLogoImg && uiLogoImg.src) {
           const logoImg = new Image();
           logoImg.onload = function() {
@@ -1927,12 +1920,14 @@
             ctx.drawImage(logoImg, startX, logoY, logoWidth, logoHeight);
             ctx.globalAlpha = 1.0;
             
-            // Draw /Vikas Jajim text next to logo
-            ctx.font = `400 ${bottomLogoSize * 0.5}px 'Inter', sans-serif`;
-            ctx.fillText(` /Vikas Jajim`, startX + logoWidth * 1.1, startY);
+            startX += logoWidth + margin;
           };
           logoImg.src = uiLogoImg.src;
         }
+        
+        // Draw /Vikas Jajim text only once at the end
+        ctx.font = `400 ${bottomLogoSize * 0.6}px 'Inter', sans-serif`;
+        ctx.fillText('/Vikas Jajim', startX, startY);
       }
 
       async function generateAndDownloadPost() {
@@ -2118,7 +2113,7 @@
               iconChar = ''; 
               break;
             case 'twitter': 
-              iconChar = ''; 
+              iconChar = ''; 
               break;
             case 'linkedin': 
               iconChar = ''; 
@@ -2127,6 +2122,7 @@
               iconChar = '勵'; 
               break;
             case 'whatsapp-status': 
+            case 'whatsapp-square': 
               iconChar = ''; 
               break;
             case 'youtube-square': 
@@ -2186,7 +2182,7 @@
             ctx.globalAlpha = 1.0;
           }
 
-          // NEW: Draw bottom platform logos with /Vikas Jajim text in same line
+          // NEW: Draw bottom platform logos with /Vikas Jajim text only once at the end
           drawBottomPlatformLogosFinal(ctx, canvas);
 
           updateProgress(90);
