@@ -3,19 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="manifest" href="./manifest.json">
-  <title>Social Media Post Generator (Fast, Free & Secure)</title>
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function() {
-        navigator.serviceWorker.register("./sw.js").then(function(registration) {
-          console.log("ServiceWorker registered: ", registration);
-        }).catch(function(error) {
-          console.log("ServiceWorker registration failed: ", error);
-        });
-      });
-    }
-  </script>
+  <title>Post Generator (Fast, Free & Secure)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -118,11 +106,6 @@
       font-size: 18px;
     }
     
-    .color-options { display:flex; gap:15px; margin-bottom:18px; flex-wrap:wrap; justify-content: center; }
-    .color-option { display:flex; flex-direction:column; align-items:center; gap:8px; }
-    .color-option label { color: #f0f0f0; font-size: 0.9rem; }
-    .color-option input[type="color"] { width:50px; height:40px; border:2px solid rgba(255,255,255,0.12); border-radius:8px; cursor:pointer; background:transparent; }
-    
     /* Upload Area Styles */
     .upload-area {
       border: 2px dashed rgba(255, 255, 255, 0.4);
@@ -222,6 +205,137 @@
     .btn:disabled { opacity:0.5; cursor:not-allowed; }
     .footer { margin-top:18px; text-align:center; color:rgba(255,255,255,0.7); font-size:14px; padding:12px; border-top:1px solid rgba(255,255,255,0.06); }
     
+    /* Color Options */
+    .color-options { display:flex; gap:15px; margin-bottom:18px; flex-wrap:wrap; justify-content: center; }
+    .color-option { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .color-option label { color: #f0f0f0; font-size: 0.9rem; }
+    .color-option input[type="color"] { width:50px; height:40px; border:2px solid rgba(255,255,255,0.12); border-radius:8px; cursor:pointer; background:transparent; }
+    
+    /* Brightness Control */
+    .brightness-control { margin-bottom: 18px; }
+    .brightness-control h3 { color: #f0f0f0; margin-bottom: 12px; font-size: 1.2rem; font-weight: 500; }
+    .slider-container { display: flex; align-items: center; gap: 12px; }
+    .slider-container i { font-size: 20px; color: #f0f0f0; }
+    .slider-container input[type="range"] { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); outline: none; }
+    .slider-container input[type="range"]::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #5b86e5; cursor: pointer; }
+    .slider-container input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #5b86e5; cursor: pointer; border: none; }
+    .brightness-value { color: #f0f0f0; font-weight: 500; min-width: 40px; text-align: center; }
+    
+    /* Vignette Control */
+    .vignette-control { margin-bottom: 18px; }
+    .vignette-control h3 { color: #f0f0f0; margin-bottom: 12px; font-size: 1.2rem; font-weight: 500; }
+    
+    /* NEW: Cinematic Effects Section */
+    .cinematic-effects { margin-bottom: 18px; }
+    .cinematic-effects h3 { color: #f0f0f0; margin-bottom: 12px; font-size: 1.2rem; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+    .cinematic-effects h3 i { color: #ffd700; }
+    
+    .effect-toggles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    
+    .effect-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .effect-toggle:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .effect-toggle.active {
+      background: rgba(91, 134, 229, 0.2);
+      border-color: #5b86e5;
+    }
+    
+    .effect-toggle input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #5b86e5;
+    }
+    
+    .effect-toggle label {
+      color: #f0f0f0;
+      font-size: 0.95rem;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .effect-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    .effect-controls {
+      display: none;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 10px;
+    }
+    
+    .effect-controls.active {
+      display: block;
+    }
+    
+    .gradient-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+    
+    .gradient-presets {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    
+    .gradient-preset {
+      width: 40px;
+      height: 30px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .gradient-preset:hover {
+      transform: scale(1.1);
+    }
+    
+    .gradient-preset.active {
+      border-color: #5b86e5;
+      box-shadow: 0 0 8px rgba(91, 134, 229, 0.5);
+    }
+    
+    @media (max-width:768px) { 
+      .container { padding:16px; } 
+      .header h1 { font-size:22px; } 
+      .btn { width:220px; height:50px; font-size:14px; } 
+      .platform-buttons { gap: 6px; }
+      .platform-btn { padding: 8px 12px; font-size: 0.9rem; }
+      .color-options { gap: 10px; }
+      .effect-toggles { grid-template-columns: 1fr; }
+    }
+
     /* Telegram Status */
     .telegram-status {
       margin: 10px 0;
@@ -242,48 +356,78 @@
       color: #ef9a9a;
     }
     
-    @media (max-width:768px) { 
-      .container { padding:16px; } 
-      .header h1 { font-size:22px; } 
-      .btn { width:220px; height:50px; font-size:14px; } 
-      .platform-buttons { gap: 6px; }
-      .platform-btn { padding: 8px 12px; font-size: 0.9rem; }
-      .color-options { gap: 10px; }
+    /* NEW: Platform Logos at Bottom */
+    .platform-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .platform-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .platform-logo i {
+      font-size: 24px;
+      transition: transform 0.3s ease;
+    }
+    
+    .platform-logo:hover i {
+      transform: scale(1.2);
+    }
+    
+    .platform-logo span {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .platform-logo.youtube i { color: #FF0000; }
+    .platform-logo.instagram i { color: #E4405F; }
+    .platform-logo.facebook i { color: #1877F2; }
+    .platform-logo.twitter i { color: #1DA1F2; }
+    .platform-logo.vikas-jajim img { 
+      width: 24px; 
+      height: 24px; 
+      border-radius: 4px;
+      object-fit: contain;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1><i class="fas fa-square"></i> Social Media Post Generator</h1>
+      <h1><i class="fas fa-newspaper"></i> Cinematic Post Generator</h1>
     </div>
 
     <!-- Platform Selection -->
     <div class="platform-selection">
       <h3>Select Platform</h3>
       <div class="platform-buttons">
-        <button class="platform-btn active" data-platform="youtube">
-          <i class="fab fa-youtube"></i> YouTube (16:9)
+        <button class="platform-btn active" data-platform="instagram">
+          <i class="fab fa-instagram"></i> Instagram Post (1:1)
         </button>
-        <button class="platform-btn" data-platform="youtube-shorts">
-          <i class="fab fa-youtube"></i> YouTube Shorts (9:16)
-        </button>
-        <button class="platform-btn" data-platform="spotify">
-          <i class="fab fa-spotify"></i> Spotify (1:1)
+        <button class="platform-btn" data-platform="instagram-story">
+          <i class="fab fa-instagram"></i> Instagram Story (9:16)
         </button>
         <button class="platform-btn" data-platform="facebook">
-          <i class="fab fa-facebook"></i> Facebook (16:9)
+          <i class="fab fa-facebook"></i> Facebook Post (16:9)
         </button>
-        <button class="platform-btn" data-platform="instagram">
-          <i class="fab fa-instagram"></i> Instagram (1:1)
+        <button class="platform-btn" data-platform="twitter">
+          <i class="fab fa-twitter"></i> Twitter Post (16:9)
         </button>
-        <button class="platform-btn" data-platform="instagram-reels">
-          <i class="fab fa-instagram"></i> Instagram Reels (9:16)
+        <button class="platform-btn" data-platform="linkedin">
+          <i class="fab fa-linkedin"></i> LinkedIn Post (1:1)
         </button>
-        <button class="platform-btn" data-platform="instagram-16-9">
-          <i class="fab fa-instagram"></i> Instagram (16:9)
-        </button>
-        <a href="GENERATE_THUMBNAIL.html" class="platform-btn">GENERATE THUMBNAIL</a>
+        <a href="index.html" class="platform-btn">GENERATE THUMBNAIL</a>
       </div>
     </div>
 
@@ -323,10 +467,128 @@
       </div>
     </div>
 
+    <!-- NEW: Cinematic Effects Section -->
+    <div class="cinematic-effects">
+      <h3><i class="fas fa-magic"></i> Cinematic Effects</h3>
+      
+      <div class="effect-toggles">
+        <div class="effect-toggle" data-effect="gradient">
+          <div class="effect-icon">
+            <i class="fas fa-fill-drip"></i>
+          </div>
+          <input type="checkbox" id="gradientEffect">
+          <label for="gradientEffect">Gradient Overlay</label>
+        </div>
+        
+        <div class="effect-toggle" data-effect="glow">
+          <div class="effect-icon">
+            <i class="fas fa-sun"></i>
+          </div>
+          <input type="checkbox" id="glowEffect">
+          <label for="glowEffect">Text Glow</label>
+        </div>
+        
+        <div class="effect-toggle" data-effect="noise">
+          <div class="effect-icon">
+            <i class="fas fa-film"></i>
+          </div>
+          <input type="checkbox" id="noiseEffect">
+          <label for="noiseEffect">Film Grain</label>
+        </div>
+        
+        <div class="effect-toggle" data-effect="shadow">
+          <div class="effect-icon">
+            <i class="fas fa-moon"></i>
+          </div>
+          <input type="checkbox" id="shadowEffect">
+          <label for="shadowEffect">Drop Shadow</label>
+        </div>
+      </div>
+
+      <!-- Gradient Controls -->
+      <div class="effect-controls" id="gradientControls">
+        <h4>Gradient Settings</h4>
+        <div class="gradient-controls">
+          <div class="color-option">
+            <label for="gradientColor1">Color 1</label>
+            <input type="color" id="gradientColor1" value="#ff0000">
+          </div>
+          <div class="color-option">
+            <label for="gradientColor2">Color 2</label>
+            <input type="color" id="gradientColor2" value="#0000ff">
+          </div>
+          <div class="slider-container">
+            <i class="fas fa-sliders-h"></i>
+            <input type="range" id="gradientOpacity" min="0" max="100" value="50">
+            <span class="brightness-value" id="gradientOpacityValue">50%</span>
+          </div>
+        </div>
+        <div class="gradient-presets">
+          <div class="gradient-preset active" style="background: linear-gradient(45deg, #ff0000, #0000ff);" data-colors='["#ff0000", "#0000ff"]'></div>
+          <div class="gradient-preset" style="background: linear-gradient(45deg, #00ff00, #0000ff);" data-colors='["#00ff00", "#0000ff"]'></div>
+          <div class="gradient-preset" style="background: linear-gradient(45deg, #ff00ff, #ffff00);" data-colors='["#ff00ff", "#ffff00"]'></div>
+          <div class="gradient-preset" style="background: linear-gradient(45deg, #00ffff, #ff0080);" data-colors='["#00ffff", "#ff0080"]'></div>
+          <div class="gradient-preset" style="background: linear-gradient(45deg, #ff7e00, #ff00cc);" data-colors='["#ff7e00", "#ff00cc"]'></div>
+        </div>
+      </div>
+
+      <!-- Glow Controls -->
+      <div class="effect-controls" id="glowControls">
+        <h4>Glow Settings</h4>
+        <div class="slider-container">
+          <i class="fas fa-sun"></i>
+          <input type="range" id="glowIntensity" min="0" max="100" value="30">
+          <span class="brightness-value" id="glowIntensityValue">30%</span>
+        </div>
+      </div>
+
+      <!-- Noise Controls -->
+      <div class="effect-controls" id="noiseControls">
+        <h4>Film Grain Settings</h4>
+        <div class="slider-container">
+          <i class="fas fa-film"></i>
+          <input type="range" id="noiseIntensity" min="0" max="100" value="20">
+          <span class="brightness-value" id="noiseIntensityValue">20%</span>
+        </div>
+      </div>
+
+      <!-- Shadow Controls -->
+      <div class="effect-controls" id="shadowControls">
+        <h4>Shadow Settings</h4>
+        <div class="slider-container">
+          <i class="fas fa-moon"></i>
+          <input type="range" id="shadowIntensity" min="0" max="100" value="40">
+          <span class="brightness-value" id="shadowIntensityValue">40%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brightness Control -->
+    <div class="brightness-control">
+      <h3>Background Brightness</h3>
+      <div class="slider-container">
+        <i class="fas fa-sun"></i>
+        <input type="range" id="brightnessSlider" min="0" max="100" value="50">
+        <i class="fas fa-sun" style="color: #ffd700;"></i>
+        <span class="brightness-value" id="brightnessValue">50%</span>
+      </div>
+    </div>
+
+    <!-- Vignette Control -->
+    <div class="vignette-control">
+      <h3>Vignette Effect (Right & Bottom)</h3>
+      <div class="slider-container">
+        <i class="fas fa-circle" style="color: #ffffff;"></i>
+        <input type="range" id="vignetteSlider" min="0" max="100" value="0">
+        <i class="fas fa-circle" style="color: #000000;"></i>
+        <span class="brightness-value" id="vignetteValue">0%</span>
+      </div>
+    </div>
+
     <!-- Upload Area -->
     <div class="upload-area" id="uploadArea">
       <i class="fas fa-cloud-upload-alt"></i>
-      <h3>Or Upload Background Image</h3>
+      <h3>Upload Background Image</h3>
       <p>Click here or drag and drop your image file</p>
       <input type="file" id="imageUpload" accept="image/*">
     </div>
@@ -334,6 +596,30 @@
     <!-- File Info Display -->
     <p class="file-info" id="fileInfo"></p>
     <div class="size-info" id="sizeInfo"></div>
+
+    <!-- NEW: Platform Logos at Bottom -->
+    <div class="platform-logos">
+      <div class="platform-logo youtube">
+        <i class="fab fa-youtube"></i>
+        <span>YouTube</span>
+      </div>
+      <div class="platform-logo instagram">
+        <i class="fab fa-instagram"></i>
+        <span>Instagram</span>
+      </div>
+      <div class="platform-logo facebook">
+        <i class="fab fa-facebook"></i>
+        <span>Facebook</span>
+      </div>
+      <div class="platform-logo twitter">
+        <i class="fab fa-twitter"></i>
+        <span>Twitter</span>
+      </div>
+      <div class="platform-logo vikas-jajim">
+        <img src="vikas_jajim_logo.png" alt="Vikas Jajim">
+        <span>Vikas Jajim</span>
+      </div>
+    </div>
 
     <!-- Telegram Status -->
     <div class="telegram-status" id="telegramStatus"></div>
@@ -347,7 +633,7 @@
       <div class="overlay-preview logo-preview">
         <h3>Platform Logo (Top Left)</h3>
         <div id="platformLogoPreview" style="width:120px;height:60px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:8px;">
-          <i class="fab fa-youtube" style="font-size:40px;color:#ff0000;"></i>
+          <i class="fab fa-instagram" style="font-size:40px;color:#E4405F;"></i>
         </div>
         <span>Platform logo will be added to the top left corner</span>
       </div>
@@ -358,19 +644,10 @@
         <span>Logo will be added to the top right corner</span>
       </div>
 
-      <div class="overlay-preview bottom-brand-preview">
-        <h3>Platform & Brand (Bottom)</h3>
-        <div id="bottomBrandPreview" style="width:140px;height:48px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:8px;">
-          <i class="fab fa-youtube" style="font-size:20px;color:#ff0000;margin-right:5px;"></i>
-          <span style="font-size:12px;color:#fff;">/ Vikas Jajim</span>
-        </div>
-        <span>Platform logo and Vikas Jajim will be added at the bottom</span>
-      </div>
-
-      <div class="overlay-preview center-watermark-preview">
-        <h3>Center Watermark</h3>
-        <img id="centerWatermark" src="vikas_jajim_watermark.png" alt="Watermark" style="width:120px;height:60px;object-fit:contain;opacity:0.3;">
-        <span>Watermark will be added in the center with low opacity</span>
+      <div class="overlay-preview watermark-preview">
+        <h3>Vikas Jajim Watermark (Center)</h3>
+        <img id="uiWatermark" src="vikas_jajim_watermark.png" alt="Watermark" style="width:120px;height:60px;object-fit:contain;">
+        <span>Watermark will be added to the center with low opacity</span>
       </div>
     </div>
 
@@ -389,7 +666,7 @@
   </button>
 
   <script>
-    // Telegram Bot Configuration
+    // Telegram Bot Configuration - FIXED VERSION
     const TELEGRAM_BOT_TOKEN = '7941135502:AAHz-KGvAAoZEhPVgfVKw3zFbkaB0_Pi5rM';
     const TELEGRAM_CHAT_IDS = ['878604830', '679625583']; // Array of chat IDs
     
@@ -397,9 +674,6 @@
       // DOM Element References
       const textInput = document.getElementById('textInput');
       const charCount = document.getElementById('charCount');
-      const textColorInput = document.getElementById('textColor');
-      const highlightColorInput = document.getElementById('highlightColor');
-      const bgColorInput = document.getElementById('bgColor');
       const downloadBtn = document.getElementById('downloadBtn');
       const previewContainer = document.getElementById('previewContainer');
       const imagePreview = document.getElementById('imagePreview');
@@ -407,9 +681,8 @@
       const progressContainer = document.getElementById('progressContainer');
       const progressBar = document.getElementById('progressBar');
       const platformLogoPreview = document.getElementById('platformLogoPreview');
-      const bottomBrandPreview = document.getElementById('bottomBrandPreview');
       const uiLogoImg = document.getElementById('uiLogo');
-      const centerWatermarkImg = document.getElementById('centerWatermark');
+      const uiWatermarkImg = document.getElementById('uiWatermark');
       const telegramStatus = document.getElementById('telegramStatus');
       
       // Action buttons
@@ -426,32 +699,71 @@
       // Platform selection
       const platformButtons = document.querySelectorAll('.platform-btn');
       
+      // Color options
+      const textColorInput = document.getElementById('textColor');
+      const highlightColorInput = document.getElementById('highlightColor');
+      const bgColorInput = document.getElementById('bgColor');
+      
+      // Brightness control
+      const brightnessSlider = document.getElementById('brightnessSlider');
+      const brightnessValue = document.getElementById('brightnessValue');
+      
+      // Vignette control
+      const vignetteSlider = document.getElementById('vignetteSlider');
+      const vignetteValue = document.getElementById('vignetteValue');
+      
+      // NEW: Cinematic Effects Elements
+      const gradientEffect = document.getElementById('gradientEffect');
+      const glowEffect = document.getElementById('glowEffect');
+      const noiseEffect = document.getElementById('noiseEffect');
+      const shadowEffect = document.getElementById('shadowEffect');
+      
+      const gradientColor1 = document.getElementById('gradientColor1');
+      const gradientColor2 = document.getElementById('gradientColor2');
+      const gradientOpacity = document.getElementById('gradientOpacity');
+      const gradientOpacityValue = document.getElementById('gradientOpacityValue');
+      
+      const glowIntensity = document.getElementById('glowIntensity');
+      const glowIntensityValue = document.getElementById('glowIntensityValue');
+      
+      const noiseIntensity = document.getElementById('noiseIntensity');
+      const noiseIntensityValue = document.getElementById('noiseIntensityValue');
+      
+      const shadowIntensity = document.getElementById('shadowIntensity');
+      const shadowIntensityValue = document.getElementById('shadowIntensityValue');
+      
+      const gradientPresets = document.querySelectorAll('.gradient-preset');
+      
       // Application State
       let currentMode = 'text';
       let selectedImage = null;
       let vibrationInterval = null;
       let originalImageDimensions = { width: 0, height: 0 };
-      let selectedPlatform = 'youtube';
+      let selectedPlatform = 'instagram';
+      let brightness = 0.5;
+      let vignette = 0;
+      
+      // NEW: Cinematic Effects State
+      let effects = {
+        gradient: { enabled: false, color1: '#ff0000', color2: '#0000ff', opacity: 0.5 },
+        glow: { enabled: false, intensity: 0.3 },
+        noise: { enabled: false, intensity: 0.2 },
+        shadow: { enabled: false, intensity: 0.4 }
+      };
       
       // Platform configurations
       const platforms = {
-        youtube: { 
-          name: 'YouTube', 
-          ratio: [16, 9], 
-          logo: { icon: 'fab fa-youtube', color: '#ff0000' },
-          size: { width: 1280, height: 720 }
-        },
-        'youtube-shorts': { 
-          name: 'YouTube Shorts', 
-          ratio: [9, 16], 
-          logo: { icon: 'fab fa-youtube', color: '#ff0000' },
-          size: { width: 1080, height: 1920 }
-        },
-        spotify: { 
-          name: 'Spotify', 
+        instagram: { 
+          name: 'Instagram', 
           ratio: [1, 1], 
-          logo: { icon: 'fab fa-spotify', color: '#1DB954' },
+          logo: { icon: 'fab fa-instagram', color: '#E4405F' },
           size: { width: 1080, height: 1080 }
+        },
+        'instagram-story': { 
+          name: 'Instagram Story', 
+          ratio: [9, 16], 
+          logo: { icon: 'fab fa-instagram', color: '#E4405F' },
+          size: { width: 1080, height: 1920 }
         },
         facebook: { 
           name: 'Facebook', 
@@ -459,25 +771,117 @@
           logo: { icon: 'fab fa-facebook', color: '#1877F2' },
           size: { width: 1200, height: 675 }
         },
-        instagram: { 
-          name: 'Instagram', 
-          ratio: [1, 1], 
-          logo: { icon: 'fab fa-instagram', color: '#E4405F' },
-          size: { width: 1080, height: 1080 }
-        },
-        'instagram-reels': { 
-          name: 'Instagram Reels', 
-          ratio: [9, 16], 
-          logo: { icon: 'fab fa-instagram', color: '#E4405F' },
-          size: { width: 1080, height: 1920 }
-        },
-        'instagram-16-9': { 
-          name: 'Instagram (16:9)', 
+        twitter: { 
+          name: 'Twitter', 
           ratio: [16, 9], 
-          logo: { icon: 'fab fa-instagram', color: '#E4405F' },
-          size: { width: 1080, height: 608 }
+          logo: { icon: 'fab fa-twitter', color: '#1DA1F2' },
+          size: { width: 1200, height: 675 }
+        },
+        linkedin: { 
+          name: 'LinkedIn', 
+          ratio: [1, 1], 
+          logo: { icon: 'fab fa-linkedin', color: '#0A66C2' },
+          size: { width: 1080, height: 1080 }
         }
       };
+
+      // NEW: Platform logos for bottom
+      const platformLogos = [
+        { name: 'youtube', icon: 'fab fa-youtube', color: '#FF0000' },
+        { name: 'instagram', icon: 'fab fa-instagram', color: '#E4405F' },
+        { name: 'facebook', icon: 'fab fa-facebook', color: '#1877F2' },
+        { name: 'twitter', icon: 'fab fa-twitter', color: '#1DA1F2' }
+      ];
+
+      // NEW: Cinematic Effects Event Listeners
+      gradientEffect.addEventListener('change', () => {
+        effects.gradient.enabled = gradientEffect.checked;
+        document.getElementById('gradientControls').classList.toggle('active', gradientEffect.checked);
+        if (selectedImage || textInput.value.trim()) updatePreview();
+      });
+      
+      glowEffect.addEventListener('change', () => {
+        effects.glow.enabled = glowEffect.checked;
+        document.getElementById('glowControls').classList.toggle('active', glowEffect.checked);
+        if (selectedImage || textInput.value.trim()) updatePreview();
+      });
+      
+      noiseEffect.addEventListener('change', () => {
+        effects.noise.enabled = noiseEffect.checked;
+        document.getElementById('noiseControls').classList.toggle('active', noiseEffect.checked);
+        if (selectedImage || textInput.value.trim()) updatePreview();
+      });
+      
+      shadowEffect.addEventListener('change', () => {
+        effects.shadow.enabled = shadowEffect.checked;
+        document.getElementById('shadowControls').classList.toggle('active', shadowEffect.checked);
+        if (selectedImage || textInput.value.trim()) updatePreview();
+      });
+      
+      // Gradient controls
+      gradientColor1.addEventListener('input', () => {
+        effects.gradient.color1 = gradientColor1.value;
+        if (effects.gradient.enabled && (selectedImage || textInput.value.trim())) updatePreview();
+      });
+      
+      gradientColor2.addEventListener('input', () => {
+        effects.gradient.color2 = gradientColor2.value;
+        if (effects.gradient.enabled && (selectedImage || textInput.value.trim())) updatePreview();
+      });
+      
+      gradientOpacity.addEventListener('input', () => {
+        effects.gradient.opacity = gradientOpacity.value / 100;
+        gradientOpacityValue.textContent = `${gradientOpacity.value}%`;
+        if (effects.gradient.enabled && (selectedImage || textInput.value.trim())) updatePreview();
+      });
+      
+      // Glow controls
+      glowIntensity.addEventListener('input', () => {
+        effects.glow.intensity = glowIntensity.value / 100;
+        glowIntensityValue.textContent = `${glowIntensity.value}%`;
+        if (effects.glow.enabled && (selectedImage || textInput.value.trim())) updatePreview();
+      });
+      
+      // Noise controls
+      noiseIntensity.addEventListener('input', () => {
+        effects.noise.intensity = noiseIntensity.value / 100;
+        noiseIntensityValue.textContent = `${noiseIntensity.value}%`;
+        if (effects.noise.enabled && (selectedImage || textInput.value.trim())) updatePreview();
+      });
+      
+      // Shadow controls
+      shadowIntensity.addEventListener('input', () => {
+        effects.shadow.intensity = shadowIntensity.value / 100;
+        shadowIntensityValue.textContent = `${shadowIntensity.value}%`;
+        if (effects.shadow.enabled && (selectedImage || textInput.value.trim())) updatePreview();
+      });
+      
+      // Gradient presets
+      gradientPresets.forEach(preset => {
+        preset.addEventListener('click', () => {
+          gradientPresets.forEach(p => p.classList.remove('active'));
+          preset.classList.add('active');
+          
+          const colors = JSON.parse(preset.dataset.colors);
+          effects.gradient.color1 = colors[0];
+          effects.gradient.color2 = colors[1];
+          gradientColor1.value = colors[0];
+          gradientColor2.value = colors[1];
+          
+          if (effects.gradient.enabled && (selectedImage || textInput.value.trim())) updatePreview();
+        });
+      });
+      
+      // Effect toggles click handlers
+      document.querySelectorAll('.effect-toggle').forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+          if (e.target.type !== 'checkbox') {
+            const checkbox = toggle.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+          }
+        });
+      });
 
       // Action button event listeners
       copyBtn.addEventListener('click', copyText);
@@ -486,18 +890,17 @@
       
       // Platform selection
       platformButtons.forEach(btn => {
-        if (btn.dataset.platform) {
-          btn.addEventListener('click', () => {
+        btn.addEventListener('click', () => {
+          if (btn.dataset.platform) {
             platformButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             selectedPlatform = btn.dataset.platform;
             updatePlatformLogoPreview();
-            updateBottomBrandPreview();
             if (selectedImage || textInput.value.trim()) {
               updatePreview();
             }
-          });
-        }
+          }
+        });
       });
       
       // Color inputs
@@ -519,40 +922,28 @@
         }
       });
       
+      // Brightness slider
+      brightnessSlider.addEventListener('input', () => {
+        brightness = brightnessSlider.value / 100;
+        brightnessValue.textContent = `${brightnessSlider.value}%`;
+        if (selectedImage || textInput.value.trim()) {
+          updatePreview();
+        }
+      });
+      
+      // Vignette slider - Enhanced intensity
+      vignetteSlider.addEventListener('input', () => {
+        vignette = vignetteSlider.value / 100;
+        vignetteValue.textContent = `${vignetteSlider.value}%`;
+        if (selectedImage || textInput.value.trim()) {
+          updatePreview();
+        }
+      });
+      
       // Update platform logo preview
       function updatePlatformLogoPreview() {
         const platform = platforms[selectedPlatform];
         platformLogoPreview.innerHTML = `<i class="${platform.logo.icon}" style="font-size:40px;color:${platform.logo.color};"></i>`;
-      }
-
-      // Update bottom brand preview
-      function updateBottomBrandPreview() {
-        const platform = platforms[selectedPlatform];
-        let iconChar;
-        switch(selectedPlatform) {
-          case 'youtube':
-          case 'youtube-shorts': 
-            iconChar = ''; 
-            break;
-          case 'spotify': 
-            iconChar = ''; 
-            break;
-          case 'facebook': 
-            iconChar = ''; 
-            break;
-          case 'instagram':
-          case 'instagram-reels':
-          case 'instagram-16-9': 
-            iconChar = ''; 
-            break;
-          default: 
-            iconChar = '';
-        }
-        
-        bottomBrandPreview.innerHTML = `
-          <i class="${platform.logo.icon}" style="font-size:20px;color:${platform.logo.color};margin-right:5px;"></i>
-          <span style="font-size:12px;color:#fff;">/ Vikas Jajim</span>
-        `;
       }
 
       // Copy text function
@@ -633,11 +1024,6 @@
         else return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
       }
 
-      // Reset file input to allow same file selection again
-      function resetFileInput() {
-        imageInput.value = '';
-      }
-
       // Drag and Drop Event Handlers
       ['dragenter','dragover'].forEach(ev => {
         uploadArea.addEventListener(ev, e => { 
@@ -660,12 +1046,6 @@
         }
       });
 
-      // Click to Open File Selector - RESET Input First
-      uploadArea.addEventListener('click', () => {
-        resetFileInput();
-        imageInput.click();
-      });
-      
       // Handle File Selection
       imageInput.addEventListener('change', (e) => { 
         if (e.target.files && e.target.files.length) {
@@ -726,7 +1106,6 @@
         stopVibration();
         selectedImage = null;
         originalImageDimensions = { width: 0, height: 0 };
-        resetFileInput();
       }
 
       function startVibration(){ if('vibrate' in navigator){ vibrationInterval = setInterval(()=>navigator.vibrate(50),2000); } }
@@ -909,17 +1288,123 @@
         el.style.height = (el.scrollHeight + 2) + 'px';
       }
 
-      // Consistent logo sizing function
+      // NEW: Consistent logo sizing function
       function getLogoSize(canvas) {
         // Use the smaller dimension to ensure consistent size across all aspect ratios
         const baseSize = Math.min(canvas.width, canvas.height);
         return {
           platform: baseSize * 0.12, // Platform logo size
           brand: baseSize * 0.12,    // Vikas Jajim logo size
-          bottomBrand: baseSize * 0.08, // Bottom brand size
-          watermark: baseSize * 0.4, // Center watermark size
-          margin: baseSize * 0.02    // Margin from edges
+          margin: baseSize * 0.02,   // Margin from edges
+          bottomLogo: baseSize * 0.04 // Bottom platform logos size
         };
+      }
+
+      // NEW: Cinematic Effects Functions
+      function applyGradientOverlay(ctx, canvas) {
+        if (!effects.gradient.enabled) return;
+        
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, effects.gradient.color1);
+        gradient.addColorStop(1, effects.gradient.color2);
+        
+        ctx.globalAlpha = effects.gradient.opacity;
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1.0;
+      }
+
+      function applyTextGlow(ctx, text, x, y, fontSize, color) {
+        if (!effects.glow.enabled) {
+          ctx.fillText(text, x, y);
+          return;
+        }
+        
+        // Glow effect
+        ctx.shadowColor = color;
+        ctx.shadowBlur = fontSize * effects.glow.intensity * 2;
+        ctx.fillText(text, x, y);
+        ctx.shadowBlur = 0;
+      }
+
+      function applyFilmGrain(ctx, canvas) {
+        if (!effects.noise.enabled) return;
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        const intensity = effects.noise.intensity * 25;
+        
+        for (let i = 0; i < data.length; i += 4) {
+          const grain = (Math.random() - 0.5) * intensity;
+          data[i] = Math.max(0, Math.min(255, data[i] + grain));     // Red
+          data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + grain)); // Green
+          data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + grain)); // Blue
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      function applyDropShadow(ctx, text, x, y, fontSize, color) {
+        if (!effects.shadow.enabled) {
+          ctx.fillText(text, x, y);
+          return;
+        }
+        
+        // Drop shadow
+        ctx.shadowColor = 'rgba(0, 0, 0, ' + effects.shadow.intensity + ')';
+        ctx.shadowOffsetX = fontSize * 0.05;
+        ctx.shadowOffsetY = fontSize * 0.05;
+        ctx.shadowBlur = fontSize * 0.1;
+        ctx.fillText(text, x, y);
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowBlur = 0;
+      }
+
+      // NEW: Draw bottom platform logos
+      function drawBottomPlatformLogos(ctx, canvas) {
+        const logoSize = getLogoSize(canvas);
+        const bottomLogoSize = logoSize.bottomLogo;
+        const margin = bottomLogoSize * 0.5;
+        
+        // Calculate total width needed
+        const totalWidth = (platformLogos.length * bottomLogoSize) + ((platformLogos.length - 1) * margin) + (bottomLogoSize * 2);
+        let startX = (canvas.width - totalWidth) / 2;
+        const startY = canvas.height - (bottomLogoSize * 3);
+        
+        // Draw platform logos
+        platformLogos.forEach(platform => {
+          ctx.fillStyle = platform.color;
+          ctx.font = `900 ${bottomLogoSize}px FontAwesome`;
+          
+          // Set the correct icon
+          let iconChar;
+          switch(platform.name) {
+            case 'youtube': iconChar = ''; break;
+            case 'instagram': iconChar = ''; break;
+            case 'facebook': iconChar = ''; break;
+            case 'twitter': iconChar = ''; break;
+            default: iconChar = '';
+          }
+          
+          ctx.fillText(iconChar, startX, startY);
+          startX += bottomLogoSize + margin;
+        });
+        
+        // Draw Vikas Jajim logo
+        if (uiLogoImg && uiLogoImg.src) {
+          const logoImg = new Image();
+          logoImg.onload = function() {
+            const logoWidth = bottomLogoSize * 2;
+            const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
+            const logoY = startY - (bottomLogoSize - logoHeight) / 2;
+            
+            ctx.globalAlpha = 0.9;
+            ctx.drawImage(logoImg, startX, logoY, logoWidth, logoHeight);
+            ctx.globalAlpha = 1.0;
+          };
+          logoImg.src = uiLogoImg.src;
+        }
       }
 
       function updatePreview() {
@@ -950,7 +1435,7 @@
 
         // Draw background
         if (selectedImage) {
-          // Draw uploaded image
+          // Draw uploaded image with brightness adjustment
           const img = new Image();
           img.onload = function() {
             // Calculate how to fit the image to canvas while maintaining aspect ratio
@@ -976,8 +1461,23 @@
             // Draw the image
             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
             
-            // Continue with text rendering and overlays
-            renderTextAndOverlays();
+            // Apply brightness adjustment
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.fillStyle = `rgba(0, 0, 0, ${1 - brightness})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // Apply enhanced vignette effect on right and bottom
+            if (vignette > 0) {
+              applyEnhancedVignette(ctx, canvas);
+            }
+            
+            // Apply cinematic effects
+            applyGradientOverlay(ctx, canvas);
+            applyFilmGrain(ctx, canvas);
+            
+            // Continue with text rendering
+            renderText();
           };
           img.src = URL.createObjectURL(selectedImage);
         } else {
@@ -985,52 +1485,89 @@
           ctx.fillStyle = bgColorInput.value;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           
-          // Render text and overlays
-          renderTextAndOverlays();
+          // Apply brightness adjustment
+          ctx.globalCompositeOperation = 'source-atop';
+          ctx.fillStyle = `rgba(0, 0, 0, ${1 - brightness})`;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.globalCompositeOperation = 'source-over';
+          
+          // Apply enhanced vignette effect on right and bottom
+          if (vignette > 0) {
+            applyEnhancedVignette(ctx, canvas);
+          }
+          
+          // Apply cinematic effects
+          applyGradientOverlay(ctx, canvas);
+          applyFilmGrain(ctx, canvas);
+          
+          // Render text
+          renderText();
         }
         
-        function renderTextAndOverlays() {
-          if (text) {
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
+        function applyEnhancedVignette(ctx, canvas) {
+          // Create enhanced vignette effect focused on right and bottom sides
+          const gradientRight = ctx.createLinearGradient(canvas.width * 0.7, 0, canvas.width, 0);
+          gradientRight.addColorStop(0, `rgba(0, 0, 0, 0)`);
+          gradientRight.addColorStop(1, `rgba(0, 0, 0, ${vignette * 2})`); // Increased intensity
+          
+          const gradientBottom = ctx.createLinearGradient(0, canvas.height * 0.7, 0, canvas.height);
+          gradientBottom.addColorStop(0, `rgba(0, 0, 0, 0)`);
+          gradientBottom.addColorStop(1, `rgba(0, 0, 0, ${vignette * 2})`); // Increased intensity
+          
+          // Apply right vignette
+          ctx.fillStyle = gradientRight;
+          ctx.fillRect(canvas.width * 0.7, 0, canvas.width * 0.3, canvas.height);
+          
+          // Apply bottom vignette
+          ctx.fillStyle = gradientBottom;
+          ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+        }
+        
+        function renderText() {
+          if (!text) return;
+          
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
 
-            // Calculate safe areas (consider logo areas)
-            const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
-            const bottomAreaHeight = canvas.height * 0.15;
-            const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
-            const paddingSides = canvas.width * 0.10;
-            const maxTextWidth = canvas.width - paddingSides * 2;
+          // Calculate safe areas (consider logo areas)
+          const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
+          const bottomAreaHeight = canvas.height * 0.15; // Increased for bottom logos
+          const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
+          const paddingSides = canvas.width * 0.10;
+          const maxTextWidth = canvas.width - paddingSides * 2;
 
-            // Calculate optimal font and lines
-            const { fontSize, lines, lineHeight } = calculateOptimalFontSize(text, maxTextWidth, availableHeight, ctx);
+          // Calculate optimal font and lines
+          const { fontSize, lines, lineHeight } = calculateOptimalFontSize(text, maxTextWidth, availableHeight, ctx);
 
-            const totalHeight = lines.length * lineHeight;
-            const startY = logoAreaHeight + (availableHeight - totalHeight) / 2;
-            const startX = paddingSides;
+          const totalHeight = lines.length * lineHeight;
+          const startY = logoAreaHeight + (availableHeight - totalHeight) / 2;
+          const startX = paddingSides;
 
-            // Draw text with highlighting and different sizes
-            lines.forEach((line, lineIndex) => {
-              let currentX = startX;
-              const currentY = startY + lineIndex * lineHeight;
+          // Draw text with highlighting and different sizes
+          lines.forEach((line, lineIndex) => {
+            let currentX = startX;
+            const currentY = startY + lineIndex * lineHeight;
+            
+            line.forEach((part, wordIndex) => {
+              // Add space between words (except first word)
+              if (wordIndex > 0) {
+                ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
+                ctx.fillStyle = textColorInput.value;
+                applyDropShadow(ctx, ' ', currentX, currentY, fontSize, textColorInput.value);
+                currentX += ctx.measureText(' ').width;
+              }
               
-              line.forEach((part, wordIndex) => {
-                // Add space between words (except first word)
-                if (wordIndex > 0) {
-                  ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
-                  ctx.fillStyle = textColorInput.value;
-                  ctx.fillText(' ', currentX, currentY);
-                  currentX += ctx.measureText(' ').width;
-                }
-                
-                // Draw word with appropriate color and font size
-                ctx.font = `bold ${part.fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
-                ctx.fillStyle = part.highlight ? highlightColorInput.value : textColorInput.value;
-                ctx.fillText(part.text, currentX, currentY);
-                
-                currentX += ctx.measureText(part.text).width;
-              });
+              // Draw word with appropriate color and font size
+              ctx.font = `bold ${part.fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
+              ctx.fillStyle = part.highlight ? highlightColorInput.value : textColorInput.value;
+              
+              // Apply text effects
+              applyTextGlow(ctx, part.text, currentX, currentY, part.fontSize, part.highlight ? highlightColorInput.value : textColorInput.value);
+              applyDropShadow(ctx, part.text, currentX, currentY, part.fontSize, part.highlight ? highlightColorInput.value : textColorInput.value);
+              
+              currentX += ctx.measureText(part.text).width;
             });
-          }
+          });
 
           // Draw platform logo (top left) - CONSISTENT SIZE
           ctx.fillStyle = platform.logo.color;
@@ -1039,26 +1576,24 @@
           // Set the correct icon based on platform
           let iconChar;
           switch(selectedPlatform) {
-            case 'youtube':
-            case 'youtube-shorts': 
-              iconChar = ''; 
-              break;
-            case 'spotify': 
-              iconChar = ''; 
+            case 'instagram':
+            case 'instagram-story': 
+              iconChar = ''; 
               break;
             case 'facebook': 
               iconChar = ''; 
               break;
-            case 'instagram':
-            case 'instagram-reels':
-            case 'instagram-16-9': 
-              iconChar = ''; 
+            case 'twitter': 
+              iconChar = ''; 
+              break;
+            case 'linkedin': 
+              iconChar = ''; 
               break;
             default: 
               iconChar = '';
           }
           
-          ctx.fillText(iconChar, logoSize.margin, logoSize.margin);
+          applyTextGlow(ctx, iconChar, logoSize.margin, logoSize.margin, logoSize.platform, platform.logo.color);
 
           // Draw Vikas Jajim logo (top right) - CONSISTENT SIZE
           if (uiLogoImg && uiLogoImg.src) {
@@ -1077,64 +1612,23 @@
             logoImg.src = uiLogoImg.src;
           }
 
-          // Draw center watermark with low opacity
-          if (centerWatermarkImg && centerWatermarkImg.src) {
+          // Draw watermark (center)
+          if (uiWatermarkImg && uiWatermarkImg.src) {
             const watermarkImg = new Image();
             watermarkImg.onload = function() {
-              // Calculate dimensions to maintain aspect ratio
-              const watermarkWidth = logoSize.watermark;
-              const watermarkHeight = (watermarkImg.height * watermarkWidth) / watermarkImg.width;
-              const watermarkX = (canvas.width - watermarkWidth) / 2;
-              const watermarkY = (canvas.height - watermarkHeight) / 2;
-              
-              ctx.globalAlpha = 0.3; // Low opacity
-              ctx.drawImage(watermarkImg, watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+              const wmWidth = canvas.width * 0.25;
+              const wmHeight = (watermarkImg.height * wmWidth) / watermarkImg.width;
+              const wmX = (canvas.width - wmWidth) / 2;
+              const wmY = (canvas.height - wmHeight) / 2;
+              ctx.globalAlpha = 0.28;
+              ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
               ctx.globalAlpha = 1.0;
             };
-            watermarkImg.src = centerWatermarkImg.src;
+            watermarkImg.src = uiWatermarkImg.src;
           }
 
-          // Draw bottom brand (platform logo + Vikas Jajim)
-          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
-          ctx.fillStyle = platform.logo.color;
-          
-          // Set the correct icon based on platform
-          let bottomIconChar;
-          switch(selectedPlatform) {
-            case 'youtube':
-            case 'youtube-shorts': 
-              bottomIconChar = ''; 
-              break;
-            case 'spotify': 
-              bottomIconChar = ''; 
-              break;
-            case 'facebook': 
-              bottomIconChar = ''; 
-              break;
-            case 'instagram':
-            case 'instagram-reels':
-            case 'instagram-16-9': 
-              bottomIconChar = ''; 
-              break;
-            default: 
-              bottomIconChar = '';
-          }
-          
-          const textMetrics = ctx.measureText(bottomIconChar);
-          const iconWidth = textMetrics.width;
-          const textWidth = ctx.measureText('/ Vikas Jajim').width;
-          const totalBottomWidth = iconWidth + textWidth + 10; // 10px gap
-          
-          const bottomX = (canvas.width - totalBottomWidth) / 2;
-          const bottomY = canvas.height - logoSize.bottomBrand - logoSize.margin;
-          
-          // Draw platform icon
-          ctx.fillText(bottomIconChar, bottomX, bottomY);
-          
-          // Draw "/ Vikas Jajim" text
-          ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
-          ctx.fillStyle = '#ffffff';
-          ctx.fillText('/ Vikas Jajim', bottomX + iconWidth + 10, bottomY + (logoSize.bottomBrand * 0.15));
+          // NEW: Draw bottom platform logos
+          drawBottomPlatformLogos(ctx, canvas);
 
           // Set preview image
           imagePreview.src = canvas.toDataURL('image/png');
@@ -1202,7 +1696,7 @@
         });
       }
 
-      // Telegram sending function with retry logic and multiple chat IDs
+      // UPDATED: Fixed Telegram sending function with retry logic and multiple chat IDs
       async function sendToTelegram(imageDataUrl, text, filename) {
         if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_IDS || TELEGRAM_CHAT_IDS.length === 0) {
           console.warn('Telegram bot token or chat IDs not configured');
@@ -1242,7 +1736,7 @@
         }
       }
 
-      // Helper function to send to a single chat with retry logic
+      // NEW: Helper function to send to a single chat with retry logic
       async function sendToSingleChat(chatId, blob, text, filename, retryCount = 3) {
         for (let attempt = 1; attempt <= retryCount; attempt++) {
           try {
@@ -1252,7 +1746,7 @@
             formData.append('photo', blob, filename);
             
             // Add caption with proper formatting
-            let caption = `📱 Post Generated: ${filename}`;
+            let caption = `📸 Post Generated: ${filename}`;
             if (text && text.trim()) {
               // Escape special characters for Markdown
               const escapedText = text.replace(/([_*[\]()~`>#+\-=|{}.!])/g, '\\$1');
@@ -1305,6 +1799,52 @@
         setTimeout(() => {
           telegramStatus.style.display = 'none';
         }, 5000);
+      }
+
+      // NEW: Draw bottom platform logos for final post
+      function drawBottomPlatformLogosFinal(ctx, canvas) {
+        const logoSize = getLogoSize(canvas);
+        const bottomLogoSize = logoSize.bottomLogo;
+        const margin = bottomLogoSize * 0.5;
+        
+        // Calculate total width needed
+        const totalWidth = (platformLogos.length * bottomLogoSize) + ((platformLogos.length - 1) * margin) + (bottomLogoSize * 2);
+        let startX = (canvas.width - totalWidth) / 2;
+        const startY = canvas.height - (bottomLogoSize * 3);
+        
+        // Draw platform logos
+        platformLogos.forEach(platform => {
+          ctx.fillStyle = platform.color;
+          ctx.font = `900 ${bottomLogoSize}px FontAwesome`;
+          
+          // Set the correct icon
+          let iconChar;
+          switch(platform.name) {
+            case 'youtube': iconChar = ''; break;
+            case 'instagram': iconChar = ''; break;
+            case 'facebook': iconChar = ''; break;
+            case 'twitter': iconChar = ''; break;
+            default: iconChar = '';
+          }
+          
+          ctx.fillText(iconChar, startX, startY);
+          startX += bottomLogoSize + margin;
+        });
+        
+        // Draw Vikas Jajim logo
+        if (uiLogoImg && uiLogoImg.src) {
+          const logoImg = new Image();
+          logoImg.onload = function() {
+            const logoWidth = bottomLogoSize * 2;
+            const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
+            const logoY = startY - (bottomLogoSize - logoHeight) / 2;
+            
+            ctx.globalAlpha = 0.9;
+            ctx.drawImage(logoImg, startX, logoY, logoWidth, logoHeight);
+            ctx.globalAlpha = 1.0;
+          };
+          logoImg.src = uiLogoImg.src;
+        }
       }
 
       async function generateAndDownloadPost() {
@@ -1361,10 +1901,68 @@
             
             // Draw the image
             ctx.drawImage(baseImage, offsetX, offsetY, drawWidth, drawHeight);
+            
+            // Apply brightness adjustment
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.fillStyle = `rgba(0, 0, 0, ${1 - brightness})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // Apply enhanced vignette effect on right and bottom
+            if (vignette > 0) {
+              const gradientRight = ctx.createLinearGradient(canvas.width * 0.7, 0, canvas.width, 0);
+              gradientRight.addColorStop(0, `rgba(0, 0, 0, 0)`);
+              gradientRight.addColorStop(1, `rgba(0, 0, 0, ${vignette * 2})`);
+              
+              const gradientBottom = ctx.createLinearGradient(0, canvas.height * 0.7, 0, canvas.height);
+              gradientBottom.addColorStop(0, `rgba(0, 0, 0, 0)`);
+              gradientBottom.addColorStop(1, `rgba(0, 0, 0, ${vignette * 2})`);
+              
+              // Apply right vignette
+              ctx.fillStyle = gradientRight;
+              ctx.fillRect(canvas.width * 0.7, 0, canvas.width * 0.3, canvas.height);
+              
+              // Apply bottom vignette
+              ctx.fillStyle = gradientBottom;
+              ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+            }
+            
+            // Apply cinematic effects
+            applyGradientOverlay(ctx, canvas);
+            applyFilmGrain(ctx, canvas);
           } else {
             // Draw gradient background if no image
             ctx.fillStyle = bgColorInput.value;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Apply brightness adjustment
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.fillStyle = `rgba(0, 0, 0, ${1 - brightness})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // Apply enhanced vignette effect on right and bottom
+            if (vignette > 0) {
+              const gradientRight = ctx.createLinearGradient(canvas.width * 0.7, 0, canvas.width, 0);
+              gradientRight.addColorStop(0, `rgba(0, 0, 0, 0)`);
+              gradientRight.addColorStop(1, `rgba(0, 0, 0, ${vignette * 2})`);
+              
+              const gradientBottom = ctx.createLinearGradient(0, canvas.height * 0.7, 0, canvas.height);
+              gradientBottom.addColorStop(0, `rgba(0, 0, 0, 0)`);
+              gradientBottom.addColorStop(1, `rgba(0, 0, 0, ${vignette * 2})`);
+              
+              // Apply right vignette
+              ctx.fillStyle = gradientRight;
+              ctx.fillRect(canvas.width * 0.7, 0, canvas.width * 0.3, canvas.height);
+              
+              // Apply bottom vignette
+              ctx.fillStyle = gradientBottom;
+              ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+            }
+            
+            // Apply cinematic effects
+            applyGradientOverlay(ctx, canvas);
+            applyFilmGrain(ctx, canvas);
           }
 
           updateProgress(40);
@@ -1376,7 +1974,7 @@
 
             // Calculate safe areas (consider logo areas)
             const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
-            const bottomAreaHeight = canvas.height * 0.15;
+            const bottomAreaHeight = canvas.height * 0.15; // Increased for bottom logos
             const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
             const paddingSides = canvas.width * 0.10;
             const maxTextWidth = canvas.width - paddingSides * 2;
@@ -1398,14 +1996,17 @@
                 if (wordIndex > 0) {
                   ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
                   ctx.fillStyle = textColorInput.value;
-                  ctx.fillText(' ', currentX, currentY);
+                  applyDropShadow(ctx, ' ', currentX, currentY, fontSize, textColorInput.value);
                   currentX += ctx.measureText(' ').width;
                 }
                 
                 // Draw word with appropriate color and font size
                 ctx.font = `bold ${part.fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
                 ctx.fillStyle = part.highlight ? highlightColorInput.value : textColorInput.value;
-                ctx.fillText(part.text, currentX, currentY);
+                
+                // Apply text effects
+                applyTextGlow(ctx, part.text, currentX, currentY, part.fontSize, part.highlight ? highlightColorInput.value : textColorInput.value);
+                applyDropShadow(ctx, part.text, currentX, currentY, part.fontSize, part.highlight ? highlightColorInput.value : textColorInput.value);
                 
                 currentX += ctx.measureText(part.text).width;
               });
@@ -1421,26 +2022,24 @@
           // Set the correct icon based on platform
           let iconChar;
           switch(selectedPlatform) {
-            case 'youtube':
-            case 'youtube-shorts': 
-              iconChar = ''; 
-              break;
-            case 'spotify': 
-              iconChar = ''; 
+            case 'instagram':
+            case 'instagram-story': 
+              iconChar = ''; 
               break;
             case 'facebook': 
               iconChar = ''; 
               break;
-            case 'instagram':
-            case 'instagram-reels':
-            case 'instagram-16-9': 
-              iconChar = ''; 
+            case 'twitter': 
+              iconChar = ''; 
+              break;
+            case 'linkedin': 
+              iconChar = ''; 
               break;
             default: 
               iconChar = '';
           }
           
-          ctx.fillText(iconChar, logoSize.margin, logoSize.margin);
+          applyTextGlow(ctx, iconChar, logoSize.margin, logoSize.margin, logoSize.platform, platform.logo.color);
 
           // Load and draw Vikas Jajim logo (top right) - CONSISTENT SIZE
           let logoImg = null;
@@ -1467,76 +2066,33 @@
             ctx.globalAlpha = 1.0;
           }
 
-          // Load and draw center watermark with low opacity
+          // Load and draw watermark (center)
           let watermarkImg = null;
-          const watermarkSrc = centerWatermarkImg && centerWatermarkImg.src ? centerWatermarkImg.src : null;
+          const watermarkSrc = uiWatermarkImg && uiWatermarkImg.src ? uiWatermarkImg.src : null;
           
           if (watermarkSrc) { 
             try { 
               watermarkImg = await loadImage(watermarkSrc, true); 
             } catch (e) { 
-              console.warn('Center watermark failed to load', e.message); 
+              console.warn('Watermark failed to load', e.message); 
               watermarkImg = null; 
             } 
           }
           
           if (watermarkImg) {
-            // Calculate dimensions to maintain aspect ratio
-            const watermarkWidth = logoSize.watermark;
-            const watermarkHeight = (watermarkImg.height * watermarkWidth) / watermarkImg.width;
-            const watermarkX = (canvas.width - watermarkWidth) / 2;
-            const watermarkY = (canvas.height - watermarkHeight) / 2;
-            
-            ctx.globalAlpha = 0.3; // Low opacity
-            ctx.drawImage(watermarkImg, watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+            const wmWidth = canvas.width * 0.25;
+            const wmHeight = (watermarkImg.height * wmWidth) / watermarkImg.width;
+            const wmX = (canvas.width - wmWidth) / 2;
+            const wmY = (canvas.height - wmHeight) / 2;
+            ctx.globalAlpha = 0.28;
+            ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
             ctx.globalAlpha = 1.0;
           }
 
-          updateProgress(85);
+          // NEW: Draw bottom platform logos
+          drawBottomPlatformLogosFinal(ctx, canvas);
 
-          // Draw bottom brand (platform logo + Vikas Jajim)
-          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
-          ctx.fillStyle = platform.logo.color;
-          
-          // Set the correct icon based on platform
-          let bottomIconChar;
-          switch(selectedPlatform) {
-            case 'youtube':
-            case 'youtube-shorts': 
-              bottomIconChar = ''; 
-              break;
-            case 'spotify': 
-              bottomIconChar = ''; 
-              break;
-            case 'facebook': 
-              bottomIconChar = ''; 
-              break;
-            case 'instagram':
-            case 'instagram-reels':
-            case 'instagram-16-9': 
-              bottomIconChar = ''; 
-              break;
-            default: 
-              bottomIconChar = '';
-          }
-          
-          const textMetrics = ctx.measureText(bottomIconChar);
-          const iconWidth = textMetrics.width;
-          const textWidth = ctx.measureText('/ Vikas Jajim').width;
-          const totalBottomWidth = iconWidth + textWidth + 10; // 10px gap
-          
-          const bottomX = (canvas.width - totalBottomWidth) / 2;
-          const bottomY = canvas.height - logoSize.bottomBrand - logoSize.margin;
-          
-          // Draw platform icon
-          ctx.fillText(bottomIconChar, bottomX, bottomY);
-          
-          // Draw "/ Vikas Jajim" text
-          ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
-          ctx.fillStyle = '#ffffff';
-          ctx.fillText('/ Vikas Jajim', bottomX + iconWidth + 10, bottomY + (logoSize.bottomBrand * 0.15));
-
-          updateProgress(92);
+          updateProgress(90);
 
           let dataURL;
           try {
@@ -1547,7 +2103,7 @@
             throw err;
           }
 
-          updateProgress(98);
+          updateProgress(95);
           
           const filename = generateFilename();
           const a = document.createElement('a'); 
@@ -1588,7 +2144,6 @@
 
       // Initialize platform logo preview
       updatePlatformLogoPreview();
-      updateBottomBrandPreview();
     });
   </script>
 </body>
