@@ -393,12 +393,27 @@
     .platform-logo.youtube i { color: #FF0000; }
     .platform-logo.instagram i { color: #E4405F; }
     .platform-logo.facebook i { color: #1877F2; }
-    .platform-logo.twitter i { color: #1DA1F2; }
+    .platform-logo.x i { color: #000000; }
+    .platform-logo.tiktok i { color: #000000; }
+    .platform-logo.linkedin i { color: #0A66C2; }
+    .platform-logo.whatsapp i { color: #25D366; }
+    .platform-logo.telegram i { color: #0088cc; }
+    .platform-logo.snapchat i { color: #FFFC00; }
+    .platform-logo.pinterest i { color: #E60023; }
+    .platform-logo.reddit i { color: #FF4500; }
+    .platform-logo.discord i { color: #5865F2; }
+    
     .platform-logo.vikas-jajim img { 
       width: 24px; 
       height: 24px; 
       border-radius: 4px;
       object-fit: contain;
+    }
+    
+    .platform-text {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 2px;
     }
   </style>
 </head>
@@ -422,10 +437,13 @@
           <i class="fab fa-facebook"></i> Facebook Post (16:9)
         </button>
         <button class="platform-btn" data-platform="twitter">
-          <i class="fab fa-twitter"></i> Twitter Post (16:9)
+          <i class="fab fa-x-twitter"></i> Twitter Post (16:9)
         </button>
         <button class="platform-btn" data-platform="linkedin">
           <i class="fab fa-linkedin"></i> LinkedIn Post (1:1)
+        </button>
+        <button class="platform-btn" data-platform="tiktok">
+          <i class="fab fa-tiktok"></i> TikTok (9:16)
         </button>
         <a href="index.html" class="platform-btn">GENERATE THUMBNAIL</a>
       </div>
@@ -602,22 +620,37 @@
       <div class="platform-logo youtube">
         <i class="fab fa-youtube"></i>
         <span>YouTube</span>
+        <div class="platform-text">/Vikas Jajim</div>
       </div>
       <div class="platform-logo instagram">
         <i class="fab fa-instagram"></i>
         <span>Instagram</span>
+        <div class="platform-text">/Vikas Jajim</div>
       </div>
       <div class="platform-logo facebook">
         <i class="fab fa-facebook"></i>
         <span>Facebook</span>
+        <div class="platform-text">/Vikas Jajim</div>
       </div>
-      <div class="platform-logo twitter">
-        <i class="fab fa-twitter"></i>
-        <span>Twitter</span>
+      <div class="platform-logo x">
+        <i class="fab fa-x-twitter"></i>
+        <span>X</span>
+        <div class="platform-text">/Vikas Jajim</div>
+      </div>
+      <div class="platform-logo tiktok">
+        <i class="fab fa-tiktok"></i>
+        <span>TikTok</span>
+        <div class="platform-text">/Vikas Jajim</div>
+      </div>
+      <div class="platform-logo linkedin">
+        <i class="fab fa-linkedin"></i>
+        <span>LinkedIn</span>
+        <div class="platform-text">/Vikas Jajim</div>
       </div>
       <div class="platform-logo vikas-jajim">
         <img src="vikas_jajim_logo.png" alt="Vikas Jajim">
         <span>Vikas Jajim</span>
+        <div class="platform-text">/Vikas Jajim</div>
       </div>
     </div>
 
@@ -774,7 +807,7 @@
         twitter: { 
           name: 'Twitter', 
           ratio: [16, 9], 
-          logo: { icon: 'fab fa-twitter', color: '#1DA1F2' },
+          logo: { icon: 'fab fa-x-twitter', color: '#000000' },
           size: { width: 1200, height: 675 }
         },
         linkedin: { 
@@ -782,15 +815,23 @@
           ratio: [1, 1], 
           logo: { icon: 'fab fa-linkedin', color: '#0A66C2' },
           size: { width: 1080, height: 1080 }
+        },
+        tiktok: { 
+          name: 'TikTok', 
+          ratio: [9, 16], 
+          logo: { icon: 'fab fa-tiktok', color: '#000000' },
+          size: { width: 1080, height: 1920 }
         }
       };
 
-      // NEW: Platform logos for bottom
+      // NEW: Platform logos for bottom with /Vikas Jajim text
       const platformLogos = [
         { name: 'youtube', icon: 'fab fa-youtube', color: '#FF0000' },
         { name: 'instagram', icon: 'fab fa-instagram', color: '#E4405F' },
         { name: 'facebook', icon: 'fab fa-facebook', color: '#1877F2' },
-        { name: 'twitter', icon: 'fab fa-twitter', color: '#1DA1F2' }
+        { name: 'x', icon: 'fab fa-x-twitter', color: '#000000' },
+        { name: 'tiktok', icon: 'fab fa-tiktok', color: '#000000' },
+        { name: 'linkedin', icon: 'fab fa-linkedin', color: '#0A66C2' }
       ];
 
       // NEW: Cinematic Effects Event Listeners
@@ -1361,7 +1402,7 @@
         ctx.shadowBlur = 0;
       }
 
-      // NEW: Draw bottom platform logos
+      // NEW: Draw bottom platform logos with /Vikas Jajim text
       function drawBottomPlatformLogos(ctx, canvas) {
         const logoSize = getLogoSize(canvas);
         const bottomLogoSize = logoSize.bottomLogo;
@@ -1370,7 +1411,7 @@
         // Calculate total width needed
         const totalWidth = (platformLogos.length * bottomLogoSize) + ((platformLogos.length - 1) * margin) + (bottomLogoSize * 2);
         let startX = (canvas.width - totalWidth) / 2;
-        const startY = canvas.height - (bottomLogoSize * 3);
+        const startY = canvas.height - (bottomLogoSize * 4);
         
         // Draw platform logos
         platformLogos.forEach(platform => {
@@ -1383,11 +1424,24 @@
             case 'youtube': iconChar = ''; break;
             case 'instagram': iconChar = ''; break;
             case 'facebook': iconChar = ''; break;
-            case 'twitter': iconChar = ''; break;
+            case 'x': iconChar = ''; break; // Using X icon
+            case 'tiktok': iconChar = '勵'; break;
+            case 'linkedin': iconChar = ''; break;
             default: iconChar = '';
           }
           
           ctx.fillText(iconChar, startX, startY);
+          
+          // Draw platform name
+          ctx.font = `400 ${bottomLogoSize * 0.5}px 'Inter', sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText(platform.name.charAt(0).toUpperCase() + platform.name.slice(1), startX + bottomLogoSize/2, startY + bottomLogoSize * 1.2);
+          
+          // Draw /Vikas Jajim text
+          ctx.font = `300 ${bottomLogoSize * 0.4}px 'Inter', sans-serif`;
+          ctx.fillText('/Vikas Jajim', startX + bottomLogoSize/2, startY + bottomLogoSize * 1.7);
+          ctx.textAlign = 'left';
+          
           startX += bottomLogoSize + margin;
         });
         
@@ -1402,6 +1456,16 @@
             ctx.globalAlpha = 0.9;
             ctx.drawImage(logoImg, startX, logoY, logoWidth, logoHeight);
             ctx.globalAlpha = 1.0;
+            
+            // Draw Vikas Jajim text
+            ctx.font = `400 ${bottomLogoSize * 0.5}px 'Inter', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('Vikas Jajim', startX + logoWidth/2, startY + bottomLogoSize * 1.2);
+            
+            // Draw /Vikas Jajim text
+            ctx.font = `300 ${bottomLogoSize * 0.4}px 'Inter', sans-serif`;
+            ctx.fillText('/Vikas Jajim', startX + logoWidth/2, startY + bottomLogoSize * 1.7);
+            ctx.textAlign = 'left';
           };
           logoImg.src = uiLogoImg.src;
         }
@@ -1531,7 +1595,7 @@
 
           // Calculate safe areas (consider logo areas)
           const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
-          const bottomAreaHeight = canvas.height * 0.15; // Increased for bottom logos
+          const bottomAreaHeight = canvas.height * 0.20; // Increased for bottom logos
           const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
           const paddingSides = canvas.width * 0.10;
           const maxTextWidth = canvas.width - paddingSides * 2;
@@ -1589,6 +1653,9 @@
             case 'linkedin': 
               iconChar = ''; 
               break;
+            case 'tiktok': 
+              iconChar = '勵'; 
+              break;
             default: 
               iconChar = '';
           }
@@ -1627,7 +1694,7 @@
             watermarkImg.src = uiWatermarkImg.src;
           }
 
-          // NEW: Draw bottom platform logos
+          // NEW: Draw bottom platform logos with /Vikas Jajim text
           drawBottomPlatformLogos(ctx, canvas);
 
           // Set preview image
@@ -1801,7 +1868,7 @@
         }, 5000);
       }
 
-      // NEW: Draw bottom platform logos for final post
+      // NEW: Draw bottom platform logos for final post with /Vikas Jajim text
       function drawBottomPlatformLogosFinal(ctx, canvas) {
         const logoSize = getLogoSize(canvas);
         const bottomLogoSize = logoSize.bottomLogo;
@@ -1810,7 +1877,7 @@
         // Calculate total width needed
         const totalWidth = (platformLogos.length * bottomLogoSize) + ((platformLogos.length - 1) * margin) + (bottomLogoSize * 2);
         let startX = (canvas.width - totalWidth) / 2;
-        const startY = canvas.height - (bottomLogoSize * 3);
+        const startY = canvas.height - (bottomLogoSize * 4);
         
         // Draw platform logos
         platformLogos.forEach(platform => {
@@ -1823,11 +1890,24 @@
             case 'youtube': iconChar = ''; break;
             case 'instagram': iconChar = ''; break;
             case 'facebook': iconChar = ''; break;
-            case 'twitter': iconChar = ''; break;
+            case 'x': iconChar = ''; break; // Using X icon
+            case 'tiktok': iconChar = '勵'; break;
+            case 'linkedin': iconChar = ''; break;
             default: iconChar = '';
           }
           
           ctx.fillText(iconChar, startX, startY);
+          
+          // Draw platform name
+          ctx.font = `400 ${bottomLogoSize * 0.5}px 'Inter', sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText(platform.name.charAt(0).toUpperCase() + platform.name.slice(1), startX + bottomLogoSize/2, startY + bottomLogoSize * 1.2);
+          
+          // Draw /Vikas Jajim text
+          ctx.font = `300 ${bottomLogoSize * 0.4}px 'Inter', sans-serif`;
+          ctx.fillText('/Vikas Jajim', startX + bottomLogoSize/2, startY + bottomLogoSize * 1.7);
+          ctx.textAlign = 'left';
+          
           startX += bottomLogoSize + margin;
         });
         
@@ -1842,6 +1922,16 @@
             ctx.globalAlpha = 0.9;
             ctx.drawImage(logoImg, startX, logoY, logoWidth, logoHeight);
             ctx.globalAlpha = 1.0;
+            
+            // Draw Vikas Jajim text
+            ctx.font = `400 ${bottomLogoSize * 0.5}px 'Inter', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('Vikas Jajim', startX + logoWidth/2, startY + bottomLogoSize * 1.2);
+            
+            // Draw /Vikas Jajim text
+            ctx.font = `300 ${bottomLogoSize * 0.4}px 'Inter', sans-serif`;
+            ctx.fillText('/Vikas Jajim', startX + logoWidth/2, startY + bottomLogoSize * 1.7);
+            ctx.textAlign = 'left';
           };
           logoImg.src = uiLogoImg.src;
         }
@@ -1974,7 +2064,7 @@
 
             // Calculate safe areas (consider logo areas)
             const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
-            const bottomAreaHeight = canvas.height * 0.15; // Increased for bottom logos
+            const bottomAreaHeight = canvas.height * 0.20; // Increased for bottom logos
             const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
             const paddingSides = canvas.width * 0.10;
             const maxTextWidth = canvas.width - paddingSides * 2;
@@ -2035,6 +2125,9 @@
             case 'linkedin': 
               iconChar = ''; 
               break;
+            case 'tiktok': 
+              iconChar = '勵'; 
+              break;
             default: 
               iconChar = '';
           }
@@ -2089,7 +2182,7 @@
             ctx.globalAlpha = 1.0;
           }
 
-          // NEW: Draw bottom platform logos
+          // NEW: Draw bottom platform logos with /Vikas Jajim text
           drawBottomPlatformLogosFinal(ctx, canvas);
 
           updateProgress(90);
