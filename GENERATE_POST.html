@@ -3,46 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="manifest" href="./manifest.json">
-  <title>Social Media Post Generator (Fast, Free & Secure)</title>
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function() {
-        navigator.serviceWorker.register("./sw.js").then(function(registration) {
-          console.log("ServiceWorker registered: ", registration);
-        }).catch(function(error) {
-          console.log("ServiceWorker registration failed: ", error);
-        });
-      });
-    }
-  </script>
+  <title>Social Media Post Generator</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-      min-height: 100vh; display:flex; justify-content:center; align-items:center; padding:24px;
-      color:#f0f0f0;
-      background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('images/background.jpg');
-      background-size:cover; background-position:center; background-attachment:fixed;
+      font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+      min-height: 100vh; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 24px;
+      color: #f0f0f0;
+      background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), #1a1a2e;
+      background-size: cover; 
+      background-position: center;
     }
     .container {
-      width:100%; max-width:900px; background: rgba(255,255,255,0.15); backdrop-filter: blur(16px);
-      border-radius:20px; box-shadow:0 8px 32px rgba(0,0,0,0.2); overflow:hidden; border:1px solid rgba(255,255,255,0.3);
-      transition: transform .3s; padding:24px;
+      width: 100%; 
+      max-width: 900px; 
+      background: rgba(255,255,255,0.15); 
+      backdrop-filter: blur(16px);
+      border-radius: 20px; 
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2); 
+      overflow: hidden; 
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 24px;
     }
-    .header { padding:18px; text-align:center; background: rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.3); margin-bottom:18px; border-radius:12px; }
-    .header h1 { font-size:26px; font-weight:600; color:#f0f0f0; display:flex; gap:12px; align-items:center; justify-content:center; }
-    .text-input-area { border:2px solid rgba(255,255,255,0.14); border-radius:12px; padding:16px; background:rgba(255,255,255,0.04); margin-bottom:18px; }
-    .text-input-area label { display:block; color:#f0f0f0; margin-bottom:10px; font-size:1.05rem; font-weight:500; }
+    .header { 
+      padding: 18px; 
+      text-align: center; 
+      background: rgba(255,255,255,0.03); 
+      border-bottom: 1px solid rgba(255,255,255,0.3); 
+      margin-bottom: 18px; 
+      border-radius: 12px; 
+    }
+    .header h1 { 
+      font-size: 26px; 
+      font-weight: 600; 
+      color: #f0f0f0; 
+      display: flex; 
+      gap: 12px; 
+      align-items: center; 
+      justify-content: center; 
+    }
+    .text-input-area { 
+      border: 2px solid rgba(255,255,255,0.14); 
+      border-radius: 12px; 
+      padding: 16px; 
+      background: rgba(255,255,255,0.04); 
+      margin-bottom: 18px; 
+    }
+    .text-input-area label { 
+      display: block; 
+      color: #f0f0f0; 
+      margin-bottom: 10px; 
+      font-size: 1.05rem; 
+      font-weight: 500; 
+    }
     .text-input-area textarea {
-      width:100%; min-height:72px; max-height:60vh; overflow:hidden; resize:none; background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:12px; color:#f0f0f0; font-size:1rem; line-height:1.3; font-family:inherit;
+      width: 100%; 
+      min-height: 72px; 
+      max-height: 60vh; 
+      overflow: hidden; 
+      resize: none; 
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06); 
+      border-radius: 8px; 
+      padding: 12px; 
+      color: #f0f0f0; 
+      font-size: 1rem; 
+      line-height: 1.3; 
+      font-family: inherit;
       white-space: pre-wrap;
     }
-    .text-input-area textarea:focus { outline:none; border-color:#5b86e5; box-shadow:0 0 0 4px rgba(91,134,229,0.08); }
-    .char-count { text-align:right; color:rgba(255,255,255,0.7); font-size:0.9rem; margin-top:8px; }
+    .text-input-area textarea:focus { 
+      outline: none; 
+      border-color: #5b86e5; 
+      box-shadow: 0 0 0 4px rgba(91,134,229,0.08); 
+    }
+    .char-count { 
+      text-align: right; 
+      color: rgba(255,255,255,0.7); 
+      font-size: 0.9rem; 
+      margin-top: 8px; 
+    }
     
     /* Action Buttons */
     .action-buttons {
@@ -118,10 +164,31 @@
       font-size: 18px;
     }
     
-    .color-options { display:flex; gap:15px; margin-bottom:18px; flex-wrap:wrap; justify-content: center; }
-    .color-option { display:flex; flex-direction:column; align-items:center; gap:8px; }
-    .color-option label { color: #f0f0f0; font-size: 0.9rem; }
-    .color-option input[type="color"] { width:50px; height:40px; border:2px solid rgba(255,255,255,0.12); border-radius:8px; cursor:pointer; background:transparent; }
+    .color-options { 
+      display: flex; 
+      gap: 15px; 
+      margin-bottom: 18px; 
+      flex-wrap: wrap; 
+      justify-content: center; 
+    }
+    .color-option { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 8px; 
+    }
+    .color-option label { 
+      color: #f0f0f0; 
+      font-size: 0.9rem; 
+    }
+    .color-option input[type="color"] { 
+      width: 50px; 
+      height: 40px; 
+      border: 2px solid rgba(255,255,255,0.12); 
+      border-radius: 8px; 
+      cursor: pointer; 
+      background: transparent; 
+    }
     
     /* Upload Area Styles */
     .upload-area {
@@ -133,16 +200,14 @@
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2),
-                  inset 0 1px 2px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
       margin-bottom: 18px;
     }
     .upload-area:hover,
     .upload-area.active {
       background: rgba(255, 255, 255, 0.25);
       border-color: #5b86e5;
-      box-shadow: 0 8px 24px rgba(91, 134, 229, 0.3),
-                  inset 0 2px 4px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 24px rgba(91, 134, 229, 0.3);
     }
     .upload-area i {
       font-size: 40px;
@@ -182,23 +247,6 @@
       padding: 0 10px;
       display: none;
       font-weight: bold;
-      text-decoration: underline;
-      background: linear-gradient(90deg,
-                  rgba(255, 255, 255, 0) 0%,
-                  rgba(255, 255, 255, 0.8) 50%,
-                  rgba(255, 255, 255, 0) 100%);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shine 2s linear infinite;
-    }
-    @keyframes shine {
-      from {
-        background-position: 200% 0;
-      }
-      to {
-        background-position: -200% 0;
-      }
     }
     .size-info {
       color: rgba(255, 255, 255, 0.8);
@@ -212,16 +260,89 @@
       border: 1px solid rgba(255,255,255,0.2);
     }
     
-    .preview-container { display:flex; flex-direction:column; align-items:center; margin:16px 0; display:none; }
-    .preview-title { color: #f0f0f0; margin-bottom: 10px; font-size: 1.2rem; font-weight: 500; }
-    .image-preview { max-width:100%; max-height:300px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.3); border:2px solid rgba(255,255,255,0.12); }
-    .overlays-container { display:flex; justify-content:space-around; flex-wrap:wrap; margin:20px 0; display:none; gap:20px; }
-    .overlay-preview { display:flex; flex-direction:column; align-items:center; text-align:center; background:rgba(255,255,255,0.03); padding:12px; border-radius:12px; width:200px; }
-    .progress-container { width:100%; height:8px; background: rgba(255,255,255,0.05); border-radius:4px; overflow:hidden; margin-top:12px; display:none; }
-    .progress-bar { width:0; height:100%; background: linear-gradient(90deg,#5b86e5,#36d1dc); transition: width 0.3s ease; }
-    .btn { background: rgba(255,255,255,0.12); backdrop-filter: blur(8px); color:#f0f0f0; border:1px solid rgba(255,255,255,0.14); padding:12px 28px; border-radius:28px; width:260px; height:54px; font-size:15px; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin:18px auto 0; }
-    .btn:disabled { opacity:0.5; cursor:not-allowed; }
-    .footer { margin-top:18px; text-align:center; color:rgba(255,255,255,0.7); font-size:14px; padding:12px; border-top:1px solid rgba(255,255,255,0.06); }
+    .preview-container { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      margin: 16px 0; 
+      display: none; 
+    }
+    .preview-title { 
+      color: #f0f0f0; 
+      margin-bottom: 10px; 
+      font-size: 1.2rem; 
+      font-weight: 500; 
+    }
+    .image-preview { 
+      max-width: 100%; 
+      max-height: 300px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3); 
+      border: 2px solid rgba(255,255,255,0.12); 
+    }
+    .overlays-container { 
+      display: flex; 
+      justify-content: space-around; 
+      flex-wrap: wrap; 
+      margin: 20px 0; 
+      display: none; 
+      gap: 20px; 
+    }
+    .overlay-preview { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      text-align: center; 
+      background: rgba(255,255,255,0.03); 
+      padding: 12px; 
+      border-radius: 12px; 
+      width: 200px; 
+    }
+    .progress-container { 
+      width: 100%; 
+      height: 8px; 
+      background: rgba(255,255,255,0.05); 
+      border-radius: 4px; 
+      overflow: hidden; 
+      margin-top: 12px; 
+      display: none; 
+    }
+    .progress-bar { 
+      width: 0; 
+      height: 100%; 
+      background: linear-gradient(90deg,#5b86e5,#36d1dc); 
+      transition: width 0.3s ease; 
+    }
+    .btn { 
+      background: rgba(255,255,255,0.12); 
+      backdrop-filter: blur(8px); 
+      color: #f0f0f0; 
+      border: 1px solid rgba(255,255,255,0.14); 
+      padding: 12px 28px; 
+      border-radius: 28px; 
+      width: 260px; 
+      height: 54px; 
+      font-size: 15px; 
+      font-weight: 500; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 10px; 
+      margin: 18px auto 0; 
+    }
+    .btn:disabled { 
+      opacity: 0.5; 
+      cursor: not-allowed; 
+    }
+    .footer { 
+      margin-top: 18px; 
+      text-align: center; 
+      color: rgba(255,255,255,0.7); 
+      font-size: 14px; 
+      padding: 12px; 
+      border-top: 1px solid rgba(255,255,255,0.06); 
+    }
     
     /* Telegram Status */
     .telegram-status {
@@ -243,10 +364,10 @@
       color: #ef9a9a;
     }
     
-    @media (max-width:768px) { 
-      .container { padding:16px; } 
-      .header h1 { font-size:22px; } 
-      .btn { width:220px; height:50px; font-size:14px; } 
+    @media (max-width: 768px) { 
+      .container { padding: 16px; } 
+      .header h1 { font-size: 22px; } 
+      .btn { width: 220px; height: 50px; font-size: 14px; } 
       .platform-buttons { gap: 6px; }
       .platform-btn { padding: 8px 12px; font-size: 0.9rem; }
       .color-options { gap: 10px; }
@@ -256,7 +377,7 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1><i class="fas fa-square"></i> Social Media Post Generator</h1>
+      <h1><i class="fas fa-image"></i> Social Media Post Generator</h1>
     </div>
 
     <!-- Platform Selection -->
@@ -284,14 +405,13 @@
         <button class="platform-btn" data-platform="instagram-16-9">
           <i class="fab fa-instagram"></i> Instagram (16:9)
         </button>
-        <a href="GENERATE_THUMBNAIL.html" class="platform-btn">GENERATE THUMBNAIL</a>
       </div>
     </div>
 
     <!-- Text Input Section -->
     <div class="text-input-area">
       <label for="textInput">Enter Your Text (Supports Hindi, English & Emojis)</label>
-      <textarea id="textInput" placeholder="Type your text here... Use **text** for highlighting (larger size and yellow color)" aria-label="Text input"></textarea>
+      <textarea id="textInput" placeholder="Type your text here... Use **text** for highlighting (larger size and yellow color)"></textarea>
       <div class="char-count"><span id="charCount">0</span> characters</div>
       
       <!-- Action Buttons -->
@@ -327,7 +447,7 @@
     <!-- Upload Area -->
     <div class="upload-area" id="uploadArea">
       <i class="fas fa-cloud-upload-alt"></i>
-      <h3>Or Upload Background Image</h3>
+      <h3>Upload Background Image</h3>
       <p>Click here or drag and drop your image file</p>
       <input type="file" id="imageUpload" accept="image/*">
     </div>
@@ -354,14 +474,10 @@
       </div>
 
       <div class="overlay-preview watermark-preview">
-        <h3>Vikas Jajim Logo (Top Right)</h3>
-        <img id="uiLogo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Crect width='120' height='60' fill='%23333'/%3E%3Ctext x='60' y='35' font-family='Arial' font-size='14' fill='white' text-anchor='middle'%3EVikas Jajim Logo%3C/text%3E%3C/svg%3E" alt="Logo" style="width:120px;height:60px;object-fit:contain;">
-        <span>Logo will be added to the top right corner</span>
-      </div>
-
-      <div class="overlay-preview watermark-preview">
         <h3>Vikas Jajim Watermark (Center)</h3>
-        <img id="uiWatermark" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Crect width='120' height='60' fill='%23333'/%3E%3Ctext x='60' y='35' font-family='Arial' font-size='14' fill='white' text-anchor='middle'%3EWatermark%3C/text%3E%3C/svg%3E" alt="Watermark" style="width:120px;height:60px;object-fit:contain;">
+        <div style="width:120px;height:60px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:8px;">
+          <span style="font-size:14px;color:#fff;text-align:center;">Vikas Jajim<br>Watermark</span>
+        </div>
         <span>Watermark will be added to the center with low opacity</span>
       </div>
 
@@ -388,18 +504,13 @@
     </div>
   </div>
 
-  <!-- Back Button -->
-  <button type="button" title="Back" aria-label="Go back" onclick="(function(){ if(window.history.length>1){ history.back(); } else if(document.referrer){ location.href = document.referrer; } else { location.href = '/'; } })();" style="position: fixed; top: 14px; left: 14px; z-index: 2147483647; width: 52px; height: 52px; padding: 0; border-radius: 50%; border: none; background: linear-gradient(180deg, #ffffff, #f2f2f2); box-shadow: 0 4px 12px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; backdrop-filter: blur(6px); opacity: 0.98;">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-  </button>
-
   <script>
     // Telegram Bot Configuration
     const TELEGRAM_BOT_TOKEN = '7941135502:AAHz-KGvAAoZEhPVgfVKw3zFbkaB0_Pi5rM';
-    const TELEGRAM_CHAT_IDS = ['878604830', '679625583']; // Array of chat IDs
+    const TELEGRAM_CHAT_IDS = ['878604830', '679625583'];
     
-    document.addEventListener('DOMContentLoaded', () => {
-      // DOM Element References
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM Elements
       const textInput = document.getElementById('textInput');
       const charCount = document.getElementById('charCount');
       const textColorInput = document.getElementById('textColor');
@@ -412,9 +523,6 @@
       const progressContainer = document.getElementById('progressContainer');
       const progressBar = document.getElementById('progressBar');
       const platformLogoPreview = document.getElementById('platformLogoPreview');
-      const bottomBrandPreview = document.getElementById('bottomBrandPreview');
-      const uiLogoImg = document.getElementById('uiLogo');
-      const uiWatermarkImg = document.getElementById('uiWatermark');
       const telegramStatus = document.getElementById('telegramStatus');
       
       // Action buttons
@@ -432,10 +540,7 @@
       const platformButtons = document.querySelectorAll('.platform-btn');
       
       // Application State
-      let currentMode = 'text';
       let selectedImage = null;
-      let vibrationInterval = null;
-      let originalImageDimensions = { width: 0, height: 0 };
       let selectedPlatform = 'youtube';
       
       // Platform configurations
@@ -493,52 +598,94 @@
         { icon: 'fab fa-twitter', color: '#1DA1F2', char: '' }
       ];
 
-      // Action button event listeners
+      // Initialize
+      updatePlatformLogoPreview();
+      
+      // Event Listeners
+      textInput.addEventListener('input', handleTextInput);
       copyBtn.addEventListener('click', copyText);
       clearBtn.addEventListener('click', clearText);
       pasteBtn.addEventListener('click', pasteText);
       
       // Platform selection
       platformButtons.forEach(btn => {
-        if (btn.dataset.platform) {
-          btn.addEventListener('click', () => {
-            platformButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedPlatform = btn.dataset.platform;
-            updatePlatformLogoPreview();
-            if (selectedImage || textInput.value.trim()) {
-              updatePreview();
-            }
-          });
-        }
+        btn.addEventListener('click', () => {
+          platformButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedPlatform = btn.dataset.platform;
+          updatePlatformLogoPreview();
+          if (selectedImage || textInput.value.trim()) {
+            updatePreview();
+          }
+        });
       });
       
       // Color inputs
-      textColorInput.addEventListener('input', () => {
-        if (selectedImage || textInput.value.trim()) {
-          updatePreview();
-        }
+      textColorInput.addEventListener('input', updatePreview);
+      highlightColorInput.addEventListener('input', updatePreview);
+      bgColorInput.addEventListener('input', updatePreview);
+      
+      // Upload Area Events
+      ['dragenter', 'dragover'].forEach(ev => {
+        uploadArea.addEventListener(ev, e => { 
+          e.preventDefault(); 
+          uploadArea.classList.add('active'); 
+        });
       });
       
-      highlightColorInput.addEventListener('input', () => {
-        if (selectedImage || textInput.value.trim()) {
-          updatePreview();
+      ['dragleave', 'drop'].forEach(ev => {
+        uploadArea.addEventListener(ev, e => { 
+          e.preventDefault(); 
+          uploadArea.classList.remove('active'); 
+        });
+      });
+
+      uploadArea.addEventListener('drop', (e) => {
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+          handleImageSelection(e.dataTransfer.files[0]);
         }
       });
-      
-      bgColorInput.addEventListener('input', () => {
-        if (selectedImage || textInput.value.trim()) {
-          updatePreview();
-        }
+
+      uploadArea.addEventListener('click', () => {
+        imageInput.click();
       });
       
-      // Update platform logo preview
+      imageInput.addEventListener('change', (e) => { 
+        if (e.target.files && e.target.files.length) {
+          handleImageSelection(e.target.files[0]);
+        }
+      });
+
+      downloadBtn.addEventListener('click', generateAndDownloadPost);
+
+      // Functions
       function updatePlatformLogoPreview() {
         const platform = platforms[selectedPlatform];
         platformLogoPreview.innerHTML = `<i class="${platform.logo.icon}" style="font-size:40px;color:${platform.logo.color};"></i>`;
       }
 
-      // Copy text function
+      function handleTextInput() {
+        const text = textInput.value;
+        charCount.textContent = text.length;
+        autoResizeTextarea(textInput);
+        
+        if (text.trim().length > 0 || selectedImage) {
+          downloadBtn.disabled = false;
+          previewContainer.style.display = 'flex';
+          overlaysContainer.style.display = 'flex';
+          updatePreview();
+        } else {
+          downloadBtn.disabled = true;
+          previewContainer.style.display = 'none';
+          overlaysContainer.style.display = 'none';
+        }
+      }
+
+      function autoResizeTextarea(el) {
+        el.style.height = 'auto';
+        el.style.height = (el.scrollHeight + 2) + 'px';
+      }
+
       function copyText() {
         if (textInput.value.trim() === '') {
           showTemporaryMessage('Nothing to copy', copyBtn);
@@ -546,24 +693,16 @@
         }
         
         textInput.select();
-        textInput.setSelectionRange(0, 99999); // For mobile devices
-        
         try {
           navigator.clipboard.writeText(textInput.value).then(() => {
             showTemporaryMessage('Copied!', copyBtn);
-          }).catch(() => {
-            // Fallback for older browsers
-            document.execCommand('copy');
-            showTemporaryMessage('Copied!', copyBtn);
           });
         } catch (err) {
-          // Final fallback
           document.execCommand('copy');
           showTemporaryMessage('Copied!', copyBtn);
         }
       }
 
-      // Clear text function
       function clearText() {
         if (textInput.value.trim() === '') {
           showTemporaryMessage('Already empty', clearBtn);
@@ -571,11 +710,10 @@
         }
         
         textInput.value = '';
-        textInput.dispatchEvent(new Event('input'));
+        handleTextInput();
         showTemporaryMessage('Cleared!', clearBtn);
       }
 
-      // Paste text function
       function pasteText() {
         if (!navigator.clipboard) {
           showTemporaryMessage('Clipboard API not supported', pasteBtn);
@@ -589,15 +727,13 @@
           }
           
           textInput.value = text;
-          textInput.dispatchEvent(new Event('input'));
+          handleTextInput();
           showTemporaryMessage('Pasted!', pasteBtn);
         }).catch(err => {
           showTemporaryMessage('Failed to paste', pasteBtn);
-          console.error('Failed to read clipboard: ', err);
         });
       }
 
-      // Show temporary message on button
       function showTemporaryMessage(message, button) {
         const originalHTML = button.innerHTML;
         button.innerHTML = `<span style="font-size: 12px;">${message}</span>`;
@@ -609,87 +745,29 @@
         }, 1500);
       }
 
-      // Format file size to human readable format
       function formatFileSize(bytes) {
         if (bytes < 1024) return bytes + ' B';
         else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
         else return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
       }
 
-      // Reset file input to allow same file selection again
-      function resetFileInput() {
-        imageInput.value = '';
-      }
-
-      // Drag and Drop Event Handlers
-      ['dragenter','dragover'].forEach(ev => {
-        uploadArea.addEventListener(ev, e => { 
-          e.preventDefault(); 
-          uploadArea.classList.add('active'); 
-        });
-      });
-      
-      ['dragleave','drop'].forEach(ev => {
-        uploadArea.addEventListener(ev, e => { 
-          e.preventDefault(); 
-          uploadArea.classList.remove('active'); 
-        });
-      });
-
-      // Handle File Drop
-      uploadArea.addEventListener('drop', (e) => {
-        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
-          handleImageSelection(e.dataTransfer.files[0]);
-        }
-      });
-
-      // Click to Open File Selector
-      uploadArea.addEventListener('click', () => {
-        resetFileInput();
-        imageInput.click();
-      });
-      
-      // Handle File Selection
-      imageInput.addEventListener('change', (e) => { 
-        if (e.target.files && e.target.files.length) {
-          handleImageSelection(e.target.files[0]);
-        }
-      });
-
-      /**
-       * Handle image selection and validation
-       * @param {File} file - Selected image file
-       */
       function handleImageSelection(file) {
-        // Validate file type
         if (!file.type.match('image.*')) {
           alert('Please select an image file');
-          resetUIAfterError();
           return;
         }
         
-        // Update application state
         selectedImage = file;
-        currentMode = 'image';
         fileInfoDisplay.textContent = `${file.name} (${formatFileSize(file.size)})`;
         fileInfoDisplay.style.display = 'block';
         downloadBtn.disabled = false;
-        startVibration();
 
-        // Create preview and get original dimensions
         const reader = new FileReader();
         reader.onload = function(e) {
           const img = new Image();
           img.onload = function() {
-            // Store original dimensions
-            originalImageDimensions.width = img.width;
-            originalImageDimensions.height = img.height;
-            
-            // Update size info
             sizeInfoDisplay.textContent = `Original Size: ${img.width} × ${img.height} pixels | ${formatFileSize(file.size)}`;
             sizeInfoDisplay.style.display = 'block';
-            
-            // Set preview image and update
             updatePreview();
           };
           img.src = e.target.result;
@@ -697,83 +775,37 @@
         reader.readAsDataURL(file);
       }
 
-      /**
-       * Reset UI after error
-       */
-      function resetUIAfterError() {
-        fileInfoDisplay.style.display = 'none';
-        sizeInfoDisplay.style.display = 'none';
-        previewContainer.style.display = 'none';
-        overlaysContainer.style.display = 'none';
-        downloadBtn.disabled = true;
-        stopVibration();
-        selectedImage = null;
-        originalImageDimensions = { width: 0, height: 0 };
-        resetFileInput();
-      }
-
-      function startVibration(){ if('vibrate' in navigator){ vibrationInterval = setInterval(()=>navigator.vibrate(50),2000); } }
-      function stopVibration(){ if(vibrationInterval){ clearInterval(vibrationInterval); vibrationInterval = null; } }
-
-      function generateFilename(){
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2,'0');
-        const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-        const month = months[now.getMonth()];
-        const year = now.getFullYear();
-        let hours = now.getHours();
-        const minutes = String(now.getMinutes()).padStart(2,'0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;
-        hours = String(hours).padStart(2,'0');
-        
-        if (currentMode === 'image' && selectedImage) {
-          let baseName = selectedImage.name.replace(/\.[^/.]+$/, "");
-          return `${baseName}_${selectedPlatform}_post_${day}_${month}_${year}_${hours}_${minutes}${ampm}.png`;
-        } else {
-          return `${selectedPlatform}_post_${day}_${month}_${year}_${hours}_${minutes}${ampm}.png`;
-        }
-      }
-
-      /**
-       * HIGHLIGHT PARSER - WITH SIZE INCREASE
-       */
       function parseHighlights(text) {
         const lines = text.split('\n');
         const result = [];
         
         for (const line of lines) {
           const lineData = [];
-          let currentIndex = 0;
           let inHighlight = false;
           let buffer = '';
           
           for (let i = 0; i < line.length; i++) {
-            // Check for ** pattern
             if (line[i] === '*' && line[i + 1] === '*') {
               if (inHighlight) {
-                // End of highlight
                 if (buffer) {
                   lineData.push({ text: buffer, highlight: true });
                   buffer = '';
                 }
                 inHighlight = false;
-                i++; // Skip next *
+                i++;
               } else {
-                // Start of highlight
                 if (buffer) {
                   lineData.push({ text: buffer, highlight: false });
                   buffer = '';
                 }
                 inHighlight = true;
-                i++; // Skip next *
+                i++;
               }
             } else {
               buffer += line[i];
             }
           }
           
-          // Add remaining buffer
           if (buffer) {
             lineData.push({ text: buffer, highlight: inHighlight });
           }
@@ -785,17 +817,15 @@
       }
 
       function calculateOptimalFontSize(text, maxWidth, maxHeight, ctx) {
-        let fontSize = 80; // Start with larger font
+        let fontSize = 80;
         let lines = [];
         
         while (fontSize >= 12) {
           ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
           
-          // Parse highlights first
           const parsedLines = parseHighlights(text);
           lines = [];
           
-          // Wrap each parsed line
           for (const lineData of parsedLines) {
             let currentLine = [];
             let currentWidth = 0;
@@ -804,7 +834,6 @@
               const words = part.text.split(' ');
               
               for (const word of words) {
-                // Use larger font for highlighted text
                 const wordFontSize = part.highlight ? fontSize * 1.3 : fontSize;
                 ctx.font = `bold ${wordFontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
                 const wordWidth = ctx.measureText(word).width;
@@ -828,7 +857,7 @@
             }
           }
           
-          const lineHeight = fontSize * 1.5; // Increased line height to accommodate larger highlighted text
+          const lineHeight = fontSize * 1.5;
           const totalHeight = lines.length * lineHeight;
           
           if (totalHeight <= maxHeight) {
@@ -838,7 +867,6 @@
           fontSize -= 2;
         }
         
-        // If we get here, use minimum font size and truncate if needed
         ctx.font = `bold 12px 'Noto Sans Devanagari', 'Inter', sans-serif`;
         const parsedLines = parseHighlights(text);
         lines = [];
@@ -860,7 +888,7 @@
                 currentLine.push({ text: word, highlight: part.highlight, fontSize: wordFontSize });
                 currentWidth += spaceWidth + wordWidth;
               } else {
-                break; // Stop adding words if we exceed maxWidth at minimum font
+                break;
               }
             }
           }
@@ -870,12 +898,10 @@
           }
         }
         
-        // Ensure we don't exceed max height
         const lineHeight = 12 * 1.5;
         const maxLines = Math.floor(maxHeight / lineHeight);
         if (lines.length > maxLines) {
           lines = lines.slice(0, maxLines);
-          // Add ellipsis to last line if truncated
           if (lines.length > 0) {
             const lastLine = lines[lines.length - 1];
             if (lastLine.length > 0) {
@@ -887,87 +913,52 @@
         return { fontSize: 12, lines, lineHeight };
       }
 
-      function autoResizeTextarea(el) {
-        el.style.height = 'auto';
-        el.style.height = (el.scrollHeight + 2) + 'px';
-      }
-
-      // Consistent logo sizing function
-      function getLogoSize(canvas) {
-        // Use the smaller dimension to ensure consistent size across all aspect ratios
-        const baseSize = Math.min(canvas.width, canvas.height);
-        return {
-          platform: baseSize * 0.12, // Platform logo size
-          brand: baseSize * 0.12,    // Vikas Jajim logo size
-          bottomBrand: baseSize * 0.08, // Bottom brand size
-          margin: baseSize * 0.02    // Margin from edges
-        };
-      }
-
       function updatePreview() {
         const text = textInput.value;
         const platform = platforms[selectedPlatform];
         const canvas = document.createElement('canvas');
         const previewSize = 640;
         
-        // Set canvas size based on platform aspect ratio
         if (platform.ratio[0] === platform.ratio[1]) {
-          // Square aspect ratio (1:1)
           canvas.width = previewSize;
           canvas.height = previewSize;
         } else if (platform.ratio[0] > platform.ratio[1]) {
-          // 16:9 aspect ratio
           canvas.width = previewSize;
           canvas.height = Math.round(previewSize * (platform.ratio[1] / platform.ratio[0]));
         } else {
-          // 9:16 aspect ratio
           canvas.width = Math.round(previewSize * (platform.ratio[0] / platform.ratio[1]));
           canvas.height = previewSize;
         }
         
         const ctx = canvas.getContext('2d');
 
-        // Get consistent logo sizes
-        const logoSize = getLogoSize(canvas);
-
-        // Draw background
         if (selectedImage) {
-          // Draw uploaded image
           const img = new Image();
           img.onload = function() {
-            // Calculate how to fit the image to canvas while maintaining aspect ratio
             const imgRatio = img.width / img.height;
             const canvasRatio = canvas.width / canvas.height;
             
             let drawWidth, drawHeight, offsetX, offsetY;
             
             if (imgRatio > canvasRatio) {
-              // Image is wider than canvas
               drawHeight = canvas.height;
               drawWidth = img.width * (canvas.height / img.height);
               offsetX = (canvas.width - drawWidth) / 2;
               offsetY = 0;
             } else {
-              // Image is taller than canvas
               drawWidth = canvas.width;
               drawHeight = img.height * (canvas.width / img.width);
               offsetX = 0;
               offsetY = (canvas.height - drawHeight) / 2;
             }
             
-            // Draw the image
             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-            
-            // Continue with text rendering
             renderText();
           };
           img.src = URL.createObjectURL(selectedImage);
         } else {
-          // Draw gradient background if no image
           ctx.fillStyle = bgColorInput.value;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
-          
-          // Render text
           renderText();
         }
         
@@ -977,27 +968,23 @@
           ctx.textAlign = 'left';
           ctx.textBaseline = 'top';
 
-          // Calculate safe areas (consider logo areas)
-          const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
+          const logoAreaHeight = canvas.height * 0.15;
           const bottomAreaHeight = canvas.height * 0.15;
           const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
           const paddingSides = canvas.width * 0.10;
           const maxTextWidth = canvas.width - paddingSides * 2;
 
-          // Calculate optimal font and lines
           const { fontSize, lines, lineHeight } = calculateOptimalFontSize(text, maxTextWidth, availableHeight, ctx);
 
           const totalHeight = lines.length * lineHeight;
           const startY = logoAreaHeight + (availableHeight - totalHeight) / 2;
           const startX = paddingSides;
 
-          // Draw text with highlighting and different sizes
           lines.forEach((line, lineIndex) => {
             let currentX = startX;
             const currentY = startY + lineIndex * lineHeight;
             
             line.forEach((part, wordIndex) => {
-              // Add space between words (except first word)
               if (wordIndex > 0) {
                 ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
                 ctx.fillStyle = textColorInput.value;
@@ -1005,7 +992,6 @@
                 currentX += ctx.measureText(' ').width;
               }
               
-              // Draw word with appropriate color and font size
               ctx.font = `bold ${part.fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
               ctx.fillStyle = part.highlight ? highlightColorInput.value : textColorInput.value;
               ctx.fillText(part.text, currentX, currentY);
@@ -1014,11 +1000,10 @@
             });
           });
 
-          // Draw platform logo (top left) - CONSISTENT SIZE
+          // Draw platform logo (top left)
           ctx.fillStyle = platform.logo.color;
-          ctx.font = `900 ${logoSize.platform}px FontAwesome`;
+          ctx.font = `900 ${canvas.width * 0.12}px FontAwesome`;
           
-          // Set the correct icon based on platform
           let iconChar;
           switch(selectedPlatform) {
             case 'youtube':
@@ -1040,246 +1025,53 @@
               iconChar = '';
           }
           
-          ctx.fillText(iconChar, logoSize.margin, logoSize.margin);
+          ctx.fillText(iconChar, canvas.width * 0.02, canvas.width * 0.02);
 
-          // Draw Vikas Jajim logo (top right) - CONSISTENT SIZE
-          if (uiLogoImg && uiLogoImg.src) {
-            const logoImg = new Image();
-            logoImg.onload = function() {
-              // Calculate dimensions to maintain aspect ratio
-              const logoWidth = logoSize.brand;
-              const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
-              const logoX = canvas.width - logoWidth - logoSize.margin;
-              const logoY = logoSize.margin;
-              
-              ctx.globalAlpha = 0.9;
-              ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
-              ctx.globalAlpha = 1.0;
-            };
-            logoImg.src = uiLogoImg.src;
-          }
-
-          // Draw Vikas Jajim watermark (center)
-          if (uiWatermarkImg && uiWatermarkImg.src) {
-            const watermarkImg = new Image();
-            watermarkImg.onload = function() {
-              const wmWidth = canvas.width * 0.25;
-              const wmHeight = (watermarkImg.height * wmWidth) / watermarkImg.width;
-              const wmX = (canvas.width - wmWidth) / 2;
-              const wmY = (canvas.height - wmHeight) / 2;
-              ctx.globalAlpha = 0.28;
-              ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
-              ctx.globalAlpha = 1.0;
-            };
-            watermarkImg.src = uiWatermarkImg.src;
-          }
+          // Draw watermark (center)
+          ctx.font = `600 ${canvas.width * 0.08}px 'Inter', sans-serif`;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Vikas Jajim', canvas.width / 2, canvas.height / 2);
+          ctx.textAlign = 'left';
 
           // Draw all platform logos at the bottom
-          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
+          ctx.font = `600 ${canvas.width * 0.08}px FontAwesome`;
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
 
-          // Calculate total width of all platform icons
           let totalIconsWidth = 0;
           allPlatforms.forEach(platform => {
-            totalIconsWidth += ctx.measureText(platform.char).width + 8; // 8px gap between icons
+            totalIconsWidth += ctx.measureText(platform.char).width + 8;
           });
 
-          // Calculate text width
-          ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
+          ctx.font = `500 ${canvas.width * 0.08 * 0.7}px 'Inter', sans-serif`;
           const textWidth = ctx.measureText('/ Vikas Jajim').width;
           
-          // Total width of bottom section
-          const totalBottomWidth = totalIconsWidth + textWidth + 10; // 10px gap between icons and text
-          
-          // Starting position to center the entire bottom section
-          const startX = (canvas.width - totalBottomWidth) / 2;
-          const y = canvas.height - logoSize.bottomBrand - logoSize.margin;
+          const totalBottomWidth = totalIconsWidth + textWidth + 10;
+          const startXBottom = (canvas.width - totalBottomWidth) / 2;
+          const y = canvas.height - canvas.width * 0.08 - canvas.width * 0.02;
 
-          let currentX = startX;
+          let currentX = startXBottom;
 
-          // Draw each platform icon
-          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
+          ctx.font = `600 ${canvas.width * 0.08}px FontAwesome`;
           allPlatforms.forEach(platform => {
             ctx.fillStyle = platform.color;
             ctx.fillText(platform.char, currentX, y);
-            currentX += ctx.measureText(platform.char).width + 8; // 8px gap
+            currentX += ctx.measureText(platform.char).width + 8;
           });
 
-          // Draw the "/ Vikas Jajim" text
-          ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
+          ctx.font = `500 ${canvas.width * 0.08 * 0.7}px 'Inter', sans-serif`;
           ctx.fillStyle = '#ffffff';
           ctx.fillText('/ Vikas Jajim', currentX, y);
 
-          // Set preview image
           imagePreview.src = canvas.toDataURL('image/png');
         }
       }
 
-      textInput.addEventListener('input', () => {
-        const text = textInput.value;
-        charCount.textContent = text.length;
-        autoResizeTextarea(textInput);
-        
-        // Don't reset selectedImage when text changes
-        if (text.trim().length > 0 || selectedImage) {
-          downloadBtn.disabled = false;
-          previewContainer.style.display = 'flex';
-          overlaysContainer.style.display = 'flex';
-          startVibration();
-          updatePreview();
-        } else {
-          downloadBtn.disabled = true;
-          previewContainer.style.display = 'none';
-          overlaysContainer.style.display = 'none';
-          stopVibration();
-        }
-      });
-
-      autoResizeTextarea(textInput);
-
-      downloadBtn.addEventListener('click', async () => { 
-        stopVibration(); 
-        await generateAndDownloadPost();
-      });
-
       function updateProgress(percent) { 
         progressContainer.style.display = 'block'; 
         progressBar.style.width = `${percent}%`; 
-      }
-
-      function loadImage(src, useCrossOrigin = true, timeout = 7000) {
-        return new Promise((resolve, reject) => {
-          if (!src) return reject(new Error('No src provided'));
-          const img = new Image();
-          if (useCrossOrigin) img.crossOrigin = 'anonymous';
-          let done = false;
-          const t = setTimeout(() => { 
-            if (!done) { 
-              done = true; 
-              img.onload = img.onerror = null; 
-              reject(new Error('Image load timed out: ' + src)); 
-            } 
-          }, timeout);
-          img.onload = () => { 
-            if (done) return; 
-            done = true; 
-            clearTimeout(t); 
-            resolve(img); 
-          };
-          img.onerror = () => { 
-            if (done) return; 
-            done = true; 
-            clearTimeout(t); 
-            reject(new Error('Failed to load image: ' + src)); 
-          };
-          img.src = src;
-        });
-      }
-
-      // Telegram sending function with retry logic and multiple chat IDs
-      async function sendToTelegram(imageDataUrl, text, filename) {
-        if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_IDS || TELEGRAM_CHAT_IDS.length === 0) {
-          console.warn('Telegram bot token or chat IDs not configured');
-          return { success: false, message: 'Telegram not configured' };
-        }
-        
-        try {
-          // Convert data URL to blob
-          const response = await fetch(imageDataUrl);
-          const blob = await response.blob();
-          
-          let successfulSends = 0;
-          const totalChats = TELEGRAM_CHAT_IDS.length;
-          
-          // Send to ALL chat IDs
-          for (const chatId of TELEGRAM_CHAT_IDS) {
-            try {
-              await sendToSingleChat(chatId, blob, text, filename);
-              successfulSends++;
-              console.log(`Successfully sent to chat ID: ${chatId}`);
-            } catch (error) {
-              console.error(`Failed to send to chat ID ${chatId}:`, error);
-            }
-          }
-          
-          if (successfulSends === totalChats) {
-            return { success: true, message: `✅ Sent to ${successfulSends}/${totalChats} Telegram chats` };
-          } else if (successfulSends > 0) {
-            return { success: true, message: `⚠️ Sent to ${successfulSends}/${totalChats} Telegram chats` };
-          } else {
-            return { success: false, message: '❌ Failed to send to Telegram' };
-          }
-          
-        } catch (error) {
-          console.error('Error in Telegram sending process:', error);
-          return { success: false, message: '❌ Telegram error: ' + error.message };
-        }
-      }
-
-      // Helper function to send to a single chat with retry logic
-      async function sendToSingleChat(chatId, blob, text, filename, retryCount = 3) {
-        for (let attempt = 1; attempt <= retryCount; attempt++) {
-          try {
-            // Create form data for the image
-            const formData = new FormData();
-            formData.append('chat_id', chatId);
-            formData.append('photo', blob, filename);
-            
-            // Add caption with proper formatting
-            let caption = `📱 Post Generated: ${filename}`;
-            if (text && text.trim()) {
-              // Escape special characters for Markdown
-              const escapedText = text.replace(/([_*[\]()~`>#+\-=|{}.!])/g, '\\$1');
-              caption += `\n\n📝 Text Used:\n${escapedText}`;
-            }
-            
-            formData.append('caption', caption);
-            formData.append('parse_mode', 'Markdown');
-
-            // Send image to Telegram with timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-            
-            const imageResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-              method: 'POST',
-              body: formData,
-              signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!imageResponse.ok) {
-              const errorText = await imageResponse.text();
-              throw new Error(`Telegram API error: ${imageResponse.status} - ${errorText}`);
-            }
-            
-            // If we reach here, the request was successful
-            return;
-            
-          } catch (error) {
-            console.warn(`Attempt ${attempt} failed for chat ${chatId}:`, error);
-            
-            if (attempt === retryCount) {
-              throw error; // Final attempt failed
-            }
-            
-            // Wait before retrying (exponential backoff)
-            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-          }
-        }
-      }
-
-      // Function to show Telegram status
-      function showTelegramStatus(message, isSuccess) {
-        telegramStatus.textContent = message;
-        telegramStatus.className = `telegram-status ${isSuccess ? 'success' : 'error'}`;
-        telegramStatus.style.display = 'block';
-        
-        // Auto hide after 5 seconds
-        setTimeout(() => {
-          telegramStatus.style.display = 'none';
-        }, 5000);
       }
 
       async function generateAndDownloadPost() {
@@ -1301,261 +1093,293 @@
 
           updateProgress(15);
 
-          // Get consistent logo sizes for final post
-          const logoSize = getLogoSize(canvas);
-
-          // Draw background
           if (selectedImage) {
             const imgObjUrl = URL.createObjectURL(selectedImage);
-            const baseImage = await loadImage(imgObjUrl, false).catch(err => { 
-              throw new Error('Uploaded image could not be loaded: ' + err.message); 
-            });
-            updateProgress(25);
-            
-            URL.revokeObjectURL(imgObjUrl);
-
-            // Calculate how to fit the image to canvas while maintaining aspect ratio
-            const imgRatio = baseImage.width / baseImage.height;
-            const canvasRatio = canvas.width / canvas.height;
-            
-            let drawWidth, drawHeight, offsetX, offsetY;
-            
-            if (imgRatio > canvasRatio) {
-              // Image is wider than canvas
-              drawHeight = canvas.height;
-              drawWidth = baseImage.width * (canvas.height / baseImage.height);
-              offsetX = (canvas.width - drawWidth) / 2;
-              offsetY = 0;
-            } else {
-              // Image is taller than canvas
-              drawWidth = canvas.width;
-              drawHeight = baseImage.height * (canvas.width / baseImage.width);
-              offsetX = 0;
-              offsetY = (canvas.height - drawHeight) / 2;
-            }
-            
-            // Draw the image
-            ctx.drawImage(baseImage, offsetX, offsetY, drawWidth, drawHeight);
+            const baseImage = new Image();
+            baseImage.onload = function() {
+              const imgRatio = baseImage.width / baseImage.height;
+              const canvasRatio = canvas.width / canvas.height;
+              
+              let drawWidth, drawHeight, offsetX, offsetY;
+              
+              if (imgRatio > canvasRatio) {
+                drawHeight = canvas.height;
+                drawWidth = baseImage.width * (canvas.height / baseImage.height);
+                offsetX = (canvas.width - drawWidth) / 2;
+                offsetY = 0;
+              } else {
+                drawWidth = canvas.width;
+                drawHeight = baseImage.height * (canvas.width / baseImage.width);
+                offsetX = 0;
+                offsetY = (canvas.height - drawHeight) / 2;
+              }
+              
+              ctx.drawImage(baseImage, offsetX, offsetY, drawWidth, drawHeight);
+              renderFinalContent();
+            };
+            baseImage.src = imgObjUrl;
           } else {
-            // Draw gradient background if no image
             ctx.fillStyle = bgColorInput.value;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            renderFinalContent();
           }
 
-          updateProgress(40);
+          function renderFinalContent() {
+            updateProgress(40);
 
-          // Draw text
-          if (text) {
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
+            if (text) {
+              ctx.textAlign = 'left';
+              ctx.textBaseline = 'top';
 
-            // Calculate safe areas (consider logo areas)
-            const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
-            const bottomAreaHeight = canvas.height * 0.15;
-            const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
-            const paddingSides = canvas.width * 0.10;
-            const maxTextWidth = canvas.width - paddingSides * 2;
+              const logoAreaHeight = canvas.height * 0.15;
+              const bottomAreaHeight = canvas.height * 0.15;
+              const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
+              const paddingSides = canvas.width * 0.10;
+              const maxTextWidth = canvas.width - paddingSides * 2;
 
-            // Calculate optimal font and lines
-            const { fontSize, lines, lineHeight } = calculateOptimalFontSize(text, maxTextWidth, availableHeight, ctx);
+              const { fontSize, lines, lineHeight } = calculateOptimalFontSize(text, maxTextWidth, availableHeight, ctx);
 
-            const totalHeight = lines.length * lineHeight;
-            const startY = logoAreaHeight + (availableHeight - totalHeight) / 2;
-            const startX = paddingSides;
+              const totalHeight = lines.length * lineHeight;
+              const startY = logoAreaHeight + (availableHeight - totalHeight) / 2;
+              const startX = paddingSides;
 
-            // Draw text with highlighting and different sizes
-            lines.forEach((line, lineIndex) => {
-              let currentX = startX;
-              const currentY = startY + lineIndex * lineHeight;
-              
-              line.forEach((part, wordIndex) => {
-                // Add space between words (except first word)
-                if (wordIndex > 0) {
-                  ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
-                  ctx.fillStyle = textColorInput.value;
-                  ctx.fillText(' ', currentX, currentY);
-                  currentX += ctx.measureText(' ').width;
-                }
+              lines.forEach((line, lineIndex) => {
+                let currentX = startX;
+                const currentY = startY + lineIndex * lineHeight;
                 
-                // Draw word with appropriate color and font size
-                ctx.font = `bold ${part.fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
-                ctx.fillStyle = part.highlight ? highlightColorInput.value : textColorInput.value;
-                ctx.fillText(part.text, currentX, currentY);
-                
-                currentX += ctx.measureText(part.text).width;
+                line.forEach((part, wordIndex) => {
+                  if (wordIndex > 0) {
+                    ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
+                    ctx.fillStyle = textColorInput.value;
+                    ctx.fillText(' ', currentX, currentY);
+                    currentX += ctx.measureText(' ').width;
+                  }
+                  
+                  ctx.font = `bold ${part.fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
+                  ctx.fillStyle = part.highlight ? highlightColorInput.value : textColorInput.value;
+                  ctx.fillText(part.text, currentX, currentY);
+                  
+                  currentX += ctx.measureText(part.text).width;
+                });
               });
-            });
-          }
-
-          updateProgress(70);
-
-          // Draw platform logo (top left) - CONSISTENT SIZE
-          ctx.fillStyle = platform.logo.color;
-          ctx.font = `900 ${logoSize.platform}px FontAwesome`;
-          
-          // Set the correct icon based on platform
-          let iconChar;
-          switch(selectedPlatform) {
-            case 'youtube':
-            case 'youtube-shorts': 
-              iconChar = ''; 
-              break;
-            case 'spotify': 
-              iconChar = ''; 
-              break;
-            case 'facebook': 
-              iconChar = ''; 
-              break;
-            case 'instagram':
-            case 'instagram-reels':
-            case 'instagram-16-9': 
-              iconChar = ''; 
-              break;
-            default: 
-              iconChar = '';
-          }
-          
-          ctx.fillText(iconChar, logoSize.margin, logoSize.margin);
-
-          // Load and draw Vikas Jajim logo (top right) - CONSISTENT SIZE
-          let logoImg = null;
-          const logoSrc = uiLogoImg && uiLogoImg.src ? uiLogoImg.src : null;
-          
-          if (logoSrc) { 
-            try { 
-              logoImg = await loadImage(logoSrc, true); 
-            } catch (e) { 
-              console.warn('Logo failed to load', e.message); 
-              logoImg = null; 
-            } 
-          }
-          
-          if (logoImg) {
-            // Calculate dimensions to maintain aspect ratio
-            const logoWidth = logoSize.brand;
-            const logoHeight = (logoImg.height * logoWidth) / logoImg.width;
-            const logoX = canvas.width - logoWidth - logoSize.margin;
-            const logoY = logoSize.margin;
-            
-            ctx.globalAlpha = 0.9;
-            ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
-            ctx.globalAlpha = 1.0;
-          }
-
-          updateProgress(85);
-
-          // Load and draw Vikas Jajim watermark (center)
-          let watermarkImg = null;
-          const watermarkSrc = uiWatermarkImg && uiWatermarkImg.src ? uiWatermarkImg.src : null;
-          
-          if (watermarkSrc) { 
-            try { 
-              watermarkImg = await loadImage(watermarkSrc, true); 
-            } catch (e) { 
-              console.warn('Watermark failed to load', e.message); 
-              watermarkImg = null; 
-            } 
-          }
-          
-          if (watermarkImg) {
-            const wmWidth = canvas.width * 0.25;
-            const wmHeight = (watermarkImg.height * wmWidth) / watermarkImg.width;
-            const wmX = (canvas.width - wmWidth) / 2;
-            const wmY = (canvas.height - wmHeight) / 2;
-            ctx.globalAlpha = 0.28;
-            ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
-            ctx.globalAlpha = 1.0;
-          }
-
-          // Draw all platform logos at the bottom
-          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'middle';
-
-          // Calculate total width of all platform icons
-          let totalIconsWidth = 0;
-          allPlatforms.forEach(platform => {
-            totalIconsWidth += ctx.measureText(platform.char).width + 8; // 8px gap between icons
-          });
-
-          // Calculate text width
-          ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
-          const textWidth = ctx.measureText('/ Vikas Jajim').width;
-          
-          // Total width of bottom section
-          const totalBottomWidth = totalIconsWidth + textWidth + 10; // 10px gap between icons and text
-          
-          // Starting position to center the entire bottom section
-          const startX = (canvas.width - totalBottomWidth) / 2;
-          const y = canvas.height - logoSize.bottomBrand - logoSize.margin;
-
-          let currentX = startX;
-
-          // Draw each platform icon
-          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
-          allPlatforms.forEach(platform => {
-            ctx.fillStyle = platform.color;
-            ctx.fillText(platform.char, currentX, y);
-            currentX += ctx.measureText(platform.char).width + 8; // 8px gap
-          });
-
-          // Draw the "/ Vikas Jajim" text
-          ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
-          ctx.fillStyle = '#ffffff';
-          ctx.fillText('/ Vikas Jajim', currentX, y);
-
-          updateProgress(92);
-
-          let dataURL;
-          try {
-            dataURL = canvas.toDataURL('image/png');
-          } catch (err) {
-            console.error('toDataURL failed:', err);
-            alert('Download failed because an overlay image is loaded from another domain without CORS permission. Ensure logo/watermark images allow CORS or are same-origin.');
-            throw err;
-          }
-
-          updateProgress(98);
-          
-          const filename = generateFilename();
-          const a = document.createElement('a'); 
-          a.href = dataURL; 
-          a.download = filename; 
-          document.body.appendChild(a); 
-          a.click(); 
-          document.body.removeChild(a);
-          
-          // Send to Telegram (non-blocking)
-          setTimeout(async () => {
-            try {
-              const telegramResult = await sendToTelegram(dataURL, text, filename);
-              showTelegramStatus(telegramResult.message, telegramResult.success);
-            } catch (error) {
-              console.error('Telegram sending failed:', error);
-              showTelegramStatus('❌ Failed to send to Telegram', false);
             }
-          }, 100);
-          
-          if ('vibrate' in navigator) navigator.vibrate(200);
-          updateProgress(100);
 
-          setTimeout(() => { 
-            progressContainer.style.display = 'none'; 
-            progressBar.style.width = '0%'; 
-            downloadBtn.disabled = false; 
-          }, 1000);
+            updateProgress(70);
+
+            // Draw platform logo (top left)
+            ctx.fillStyle = platform.logo.color;
+            ctx.font = `900 ${canvas.width * 0.12}px FontAwesome`;
+            
+            let iconChar;
+            switch(selectedPlatform) {
+              case 'youtube':
+              case 'youtube-shorts': 
+                iconChar = ''; 
+                break;
+              case 'spotify': 
+                iconChar = ''; 
+                break;
+              case 'facebook': 
+                iconChar = ''; 
+                break;
+              case 'instagram':
+              case 'instagram-reels':
+              case 'instagram-16-9': 
+                iconChar = ''; 
+                break;
+              default: 
+                iconChar = '';
+            }
+            
+            ctx.fillText(iconChar, canvas.width * 0.02, canvas.width * 0.02);
+
+            // Draw watermark (center)
+            ctx.font = `600 ${canvas.width * 0.08}px 'Inter', sans-serif`;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Vikas Jajim', canvas.width / 2, canvas.height / 2);
+            ctx.textAlign = 'left';
+
+            // Draw all platform logos at the bottom
+            ctx.font = `600 ${canvas.width * 0.08}px FontAwesome`;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+
+            let totalIconsWidth = 0;
+            allPlatforms.forEach(platform => {
+              totalIconsWidth += ctx.measureText(platform.char).width + 8;
+            });
+
+            ctx.font = `500 ${canvas.width * 0.08 * 0.7}px 'Inter', sans-serif`;
+            const textWidth = ctx.measureText('/ Vikas Jajim').width;
+            
+            const totalBottomWidth = totalIconsWidth + textWidth + 10;
+            const startXBottom = (canvas.width - totalBottomWidth) / 2;
+            const y = canvas.height - canvas.width * 0.08 - canvas.width * 0.02;
+
+            let currentX = startXBottom;
+
+            ctx.font = `600 ${canvas.width * 0.08}px FontAwesome`;
+            allPlatforms.forEach(platform => {
+              ctx.fillStyle = platform.color;
+              ctx.fillText(platform.char, currentX, y);
+              currentX += ctx.measureText(platform.char).width + 8;
+            });
+
+            ctx.font = `500 ${canvas.width * 0.08 * 0.7}px 'Inter', sans-serif`;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('/ Vikas Jajim', currentX, y);
+
+            updateProgress(92);
+
+            const dataURL = canvas.toDataURL('image/png');
+            updateProgress(98);
+            
+            const filename = generateFilename();
+            const a = document.createElement('a'); 
+            a.href = dataURL; 
+            a.download = filename; 
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a);
+            
+            // Send to Telegram
+            setTimeout(async () => {
+              try {
+                const telegramResult = await sendToTelegram(dataURL, text, filename);
+                showTelegramStatus(telegramResult.message, telegramResult.success);
+              } catch (error) {
+                console.error('Telegram sending failed:', error);
+                showTelegramStatus('❌ Failed to send to Telegram', false);
+              }
+            }, 100);
+            
+            updateProgress(100);
+
+            setTimeout(() => { 
+              progressContainer.style.display = 'none'; 
+              progressBar.style.width = '0%'; 
+              downloadBtn.disabled = false; 
+            }, 1000);
+          }
 
         } catch (error) {
           console.error('Error in processing:', error);
-          alert('Error generating post — see console for details. ' + (error && error.message ? error.message : ''));
+          alert('Error generating post: ' + (error && error.message ? error.message : ''));
           progressContainer.style.display = 'none';
           progressBar.style.width = '0%';
           downloadBtn.disabled = false;
         }
       }
 
-      // Initialize platform logo preview
-      updatePlatformLogoPreview();
+      function generateFilename(){
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2,'0');
+        const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        const month = months[now.getMonth()];
+        const year = now.getFullYear();
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2,'0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        hours = String(hours).padStart(2,'0');
+        
+        if (selectedImage) {
+          let baseName = selectedImage.name.replace(/\.[^/.]+$/, "");
+          return `${baseName}_${selectedPlatform}_post_${day}_${month}_${year}_${hours}_${minutes}${ampm}.png`;
+        } else {
+          return `${selectedPlatform}_post_${day}_${month}_${year}_${hours}_${minutes}${ampm}.png`;
+        }
+      }
+
+      async function sendToTelegram(imageDataUrl, text, filename) {
+        if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_IDS || TELEGRAM_CHAT_IDS.length === 0) {
+          return { success: false, message: 'Telegram not configured' };
+        }
+        
+        try {
+          const response = await fetch(imageDataUrl);
+          const blob = await response.blob();
+          
+          let successfulSends = 0;
+          const totalChats = TELEGRAM_CHAT_IDS.length;
+          
+          for (const chatId of TELEGRAM_CHAT_IDS) {
+            try {
+              await sendToSingleChat(chatId, blob, text, filename);
+              successfulSends++;
+            } catch (error) {
+              console.error(`Failed to send to chat ID ${chatId}:`, error);
+            }
+          }
+          
+          if (successfulSends === totalChats) {
+            return { success: true, message: `✅ Sent to ${successfulSends}/${totalChats} Telegram chats` };
+          } else if (successfulSends > 0) {
+            return { success: true, message: `⚠️ Sent to ${successfulSends}/${totalChats} Telegram chats` };
+          } else {
+            return { success: false, message: '❌ Failed to send to Telegram' };
+          }
+          
+        } catch (error) {
+          console.error('Error in Telegram sending process:', error);
+          return { success: false, message: '❌ Telegram error: ' + error.message };
+        }
+      }
+
+      async function sendToSingleChat(chatId, blob, text, filename, retryCount = 3) {
+        for (let attempt = 1; attempt <= retryCount; attempt++) {
+          try {
+            const formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('photo', blob, filename);
+            
+            let caption = `📱 Post Generated: ${filename}`;
+            if (text && text.trim()) {
+              const escapedText = text.replace(/([_*[\]()~`>#+\-=|{}.!])/g, '\\$1');
+              caption += `\n\n📝 Text Used:\n${escapedText}`;
+            }
+            
+            formData.append('caption', caption);
+            formData.append('parse_mode', 'Markdown');
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
+            const imageResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+              method: 'POST',
+              body: formData,
+              signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!imageResponse.ok) {
+              const errorText = await imageResponse.text();
+              throw new Error(`Telegram API error: ${imageResponse.status} - ${errorText}`);
+            }
+            
+            return;
+            
+          } catch (error) {
+            if (attempt === retryCount) {
+              throw error;
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          }
+        }
+      }
+
+      function showTelegramStatus(message, isSuccess) {
+        telegramStatus.textContent = message;
+        telegramStatus.className = `telegram-status ${isSuccess ? 'success' : 'error'}`;
+        telegramStatus.style.display = 'block';
+        
+        setTimeout(() => {
+          telegramStatus.style.display = 'none';
+        }, 5000);
+      }
     });
   </script>
 </body>
