@@ -390,15 +390,8 @@
     .platform-logo.youtube i { color: #FF0000; }
     .platform-logo.instagram i { color: #E4405F; }
     .platform-logo.facebook i { color: #1877F2; }
-    .platform-logo.x i { color: #000000; }
-    .platform-logo.tiktok i { color: #000000; }
-    .platform-logo.linkedin i { color: #0A66C2; }
-    .platform-logo.whatsapp i { color: #25D366; }
+    .platform-logo.twitter i { color: #1DA1F2; }
     .platform-logo.telegram i { color: #0088cc; }
-    .platform-logo.snapchat i { color: #FFFC00; }
-    .platform-logo.pinterest i { color: #E60023; }
-    .platform-logo.reddit i { color: #FF4500; }
-    .platform-logo.discord i { color: #5865F2; }
     
     .platform-logo.vikas-jajim img { 
       width: 20px; 
@@ -433,13 +426,16 @@
           <i class="fab fa-facebook"></i> Facebook Post (16:9)
         </button>
         <button class="platform-btn" data-platform="twitter">
-          <i class="fab fa-facebook"></i> Twitter Post (16:9)
+          <i class="fab fa-twitter"></i> Twitter Post (16:9)
         </button>
         <button class="platform-btn" data-platform="linkedin">
           <i class="fab fa-linkedin"></i> LinkedIn Post (1:1)
         </button>
-        <button class="platform-btn" data-platform="tiktok">
-          <i class="fab fa-tiktok"></i> TikTok (9:16)
+        <button class="platform-btn" data-platform="telegram-square">
+          <i class="fab fa-telegram"></i> Telegram Square (1:1)
+        </button>
+        <button class="platform-btn" data-platform="telegram-story">
+          <i class="fab fa-telegram"></i> Telegram Story (9:16)
         </button>
         <button class="platform-btn" data-platform="whatsapp-status">
           <i class="fab fa-whatsapp"></i> WhatsApp Status (9:16)
@@ -631,17 +627,11 @@
       <div class="platform-logo facebook">
         <i class="fab fa-facebook"></i>
       </div>
-      <div class="platform-logo x">
-        <i class="fas fa-x"></i>
+      <div class="platform-logo twitter">
+        <i class="fab fa-twitter"></i>
       </div>
-      <div class="platform-logo tiktok">
-        <i class="fab fa-tiktok"></i>
-      </div>
-      <div class="platform-logo linkedin">
-        <i class="fab fa-linkedin"></i>
-      </div>
-      <div class="platform-logo whatsapp">
-        <i class="fab fa-whatsapp"></i>
+      <div class="platform-logo telegram">
+        <i class="fab fa-telegram"></i>
       </div>
       <div class="platform-logo vikas-jajim">
         <img src="vikas_jajim_logo.png" alt="Vikas Jajim">
@@ -802,7 +792,7 @@
         twitter: { 
           name: 'Twitter', 
           ratio: [16, 9], 
-          logo: { icon: 'fas fa-x', color: '#000000' },
+          logo: { icon: 'fab fa-twitter', color: '#1DA1F2' },
           size: { width: 1200, height: 675 }
         },
         linkedin: { 
@@ -811,10 +801,16 @@
           logo: { icon: 'fab fa-linkedin', color: '#0A66C2' },
           size: { width: 1080, height: 1080 }
         },
-        tiktok: { 
-          name: 'TikTok', 
+        'telegram-square': { 
+          name: 'Telegram Square', 
+          ratio: [1, 1], 
+          logo: { icon: 'fab fa-telegram', color: '#0088cc' },
+          size: { width: 1080, height: 1080 }
+        },
+        'telegram-story': { 
+          name: 'Telegram Story', 
           ratio: [9, 16], 
-          logo: { icon: 'fab fa-tiktok', color: '#000000' },
+          logo: { icon: 'fab fa-telegram', color: '#0088cc' },
           size: { width: 1080, height: 1920 }
         },
         'whatsapp-status': { 
@@ -837,15 +833,13 @@
         }
       };
 
-      // NEW: Platform logos for bottom - only logos, no text
+      // UPDATED: Platform logos for bottom - only YouTube, Instagram, Facebook, Twitter, and Telegram
       const platformLogos = [
         { name: 'youtube', icon: 'fab fa-youtube', color: '#FF0000' },
         { name: 'instagram', icon: 'fab fa-instagram', color: '#E4405F' },
         { name: 'facebook', icon: 'fab fa-facebook', color: '#1877F2' },
-        { name: 'x', icon: 'fas fa-x', color: '#000000' },
-        { name: 'tiktok', icon: 'fab fa-tiktok', color: '#000000' },
-        { name: 'linkedin', icon: 'fab fa-linkedin', color: '#0A66C2' },
-        { name: 'whatsapp', icon: 'fab fa-whatsapp', color: '#25D366' }
+        { name: 'twitter', icon: 'fab fa-twitter', color: '#1DA1F2' },
+        { name: 'telegram', icon: 'fab fa-telegram', color: '#0088cc' }
       ];
 
       // NEW: Cinematic Effects Event Listeners
@@ -1438,10 +1432,8 @@
             case 'youtube': iconChar = ''; break;
             case 'instagram': iconChar = ''; break;
             case 'facebook': iconChar = ''; break;
-            case 'x': iconChar = ''; break; // Using "fas fa-x" icon
-            case 'tiktok': iconChar = '勵'; break;
-            case 'linkedin': iconChar = ''; break;
-            case 'whatsapp': iconChar = ''; break;
+            case 'twitter': iconChar = ''; break; // Twitter bird icon
+            case 'telegram': iconChar = ''; break;
             default: iconChar = '';
           }
           
@@ -1466,8 +1458,9 @@
           logoImg.src = uiLogoImg.src;
         }
         
-        // Draw /Vikas Jajim text only once at the end
-        ctx.font = `400 ${bottomLogoSize * 0.6}px 'Inter', sans-serif`;
+        // Draw /Vikas Jajim text only once at the end - WHITE COLOR
+        ctx.fillStyle = '#ffffff'; // White color for the text
+        ctx.font = `400 ${bottomLogoSize}px 'Inter', sans-serif`; // Same size as logo
         ctx.fillText('/Vikas Jajim', startX, startY);
       }
 
@@ -1648,13 +1641,14 @@
               iconChar = ''; 
               break;
             case 'twitter': 
-              iconChar = ''; 
+              iconChar = ''; 
               break;
             case 'linkedin': 
               iconChar = ''; 
               break;
-            case 'tiktok': 
-              iconChar = '勵'; 
+            case 'telegram-square':
+            case 'telegram-story': 
+              iconChar = ''; 
               break;
             case 'whatsapp-status': 
             case 'whatsapp-square': 
@@ -1897,10 +1891,8 @@
             case 'youtube': iconChar = ''; break;
             case 'instagram': iconChar = ''; break;
             case 'facebook': iconChar = ''; break;
-            case 'x': iconChar = ''; break; // Using "fas fa-x" icon
-            case 'tiktok': iconChar = '勵'; break;
-            case 'linkedin': iconChar = ''; break;
-            case 'whatsapp': iconChar = ''; break;
+            case 'twitter': iconChar = ''; break; // Twitter bird icon
+            case 'telegram': iconChar = ''; break;
             default: iconChar = '';
           }
           
@@ -1925,8 +1917,9 @@
           logoImg.src = uiLogoImg.src;
         }
         
-        // Draw /Vikas Jajim text only once at the end
-        ctx.font = `400 ${bottomLogoSize * 0.6}px 'Inter', sans-serif`;
+        // Draw /Vikas Jajim text only once at the end - WHITE COLOR
+        ctx.fillStyle = '#ffffff'; // White color for the text
+        ctx.font = `400 ${bottomLogoSize}px 'Inter', sans-serif`; // Same size as logo
         ctx.fillText('/Vikas Jajim', startX, startY);
       }
 
@@ -2113,13 +2106,14 @@
               iconChar = ''; 
               break;
             case 'twitter': 
-              iconChar = ''; 
+              iconChar = ''; 
               break;
             case 'linkedin': 
               iconChar = ''; 
               break;
-            case 'tiktok': 
-              iconChar = '勵'; 
+            case 'telegram-square':
+            case 'telegram-story': 
+              iconChar = ''; 
               break;
             case 'whatsapp-status': 
             case 'whatsapp-square': 
