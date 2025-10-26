@@ -366,6 +366,12 @@
         </div>
         <span>Platform logo and Vikas Jajim will be added at the bottom</span>
       </div>
+
+      <div class="overlay-preview center-watermark-preview">
+        <h3>Center Watermark</h3>
+        <img id="centerWatermark" src="vikas_jajim_watermark.png" alt="Watermark" style="width:120px;height:60px;object-fit:contain;opacity:0.3;">
+        <span>Watermark will be added in the center with low opacity</span>
+      </div>
     </div>
 
     <div class="progress-container" id="progressContainer"><div class="progress-bar" id="progressBar"></div></div>
@@ -403,6 +409,7 @@
       const platformLogoPreview = document.getElementById('platformLogoPreview');
       const bottomBrandPreview = document.getElementById('bottomBrandPreview');
       const uiLogoImg = document.getElementById('uiLogo');
+      const centerWatermarkImg = document.getElementById('centerWatermark');
       const telegramStatus = document.getElementById('telegramStatus');
       
       // Action buttons
@@ -910,6 +917,7 @@
           platform: baseSize * 0.12, // Platform logo size
           brand: baseSize * 0.12,    // Vikas Jajim logo size
           bottomBrand: baseSize * 0.08, // Bottom brand size
+          watermark: baseSize * 0.4, // Center watermark size
           margin: baseSize * 0.02    // Margin from edges
         };
       }
@@ -968,8 +976,8 @@
             // Draw the image
             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
             
-            // Continue with text rendering
-            renderText();
+            // Continue with text rendering and overlays
+            renderTextAndOverlays();
           };
           img.src = URL.createObjectURL(selectedImage);
         } else {
@@ -977,52 +985,52 @@
           ctx.fillStyle = bgColorInput.value;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           
-          // Render text
-          renderText();
+          // Render text and overlays
+          renderTextAndOverlays();
         }
         
-        function renderText() {
-          if (!text) return;
-          
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'top';
+        function renderTextAndOverlays() {
+          if (text) {
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
 
-          // Calculate safe areas (consider logo areas)
-          const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
-          const bottomAreaHeight = canvas.height * 0.15;
-          const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
-          const paddingSides = canvas.width * 0.10;
-          const maxTextWidth = canvas.width - paddingSides * 2;
+            // Calculate safe areas (consider logo areas)
+            const logoAreaHeight = logoSize.platform + logoSize.margin * 2;
+            const bottomAreaHeight = canvas.height * 0.15;
+            const availableHeight = canvas.height - logoAreaHeight - bottomAreaHeight;
+            const paddingSides = canvas.width * 0.10;
+            const maxTextWidth = canvas.width - paddingSides * 2;
 
-          // Calculate optimal font and lines
-          const { fontSize, lines, lineHeight } = calculateOptimalFontSize(text, maxTextWidth, availableHeight, ctx);
+            // Calculate optimal font and lines
+            const { fontSize, lines, lineHeight } = calculateOptimalFontSize(text, maxTextWidth, availableHeight, ctx);
 
-          const totalHeight = lines.length * lineHeight;
-          const startY = logoAreaHeight + (availableHeight - totalHeight) / 2;
-          const startX = paddingSides;
+            const totalHeight = lines.length * lineHeight;
+            const startY = logoAreaHeight + (availableHeight - totalHeight) / 2;
+            const startX = paddingSides;
 
-          // Draw text with highlighting and different sizes
-          lines.forEach((line, lineIndex) => {
-            let currentX = startX;
-            const currentY = startY + lineIndex * lineHeight;
-            
-            line.forEach((part, wordIndex) => {
-              // Add space between words (except first word)
-              if (wordIndex > 0) {
-                ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
-                ctx.fillStyle = textColorInput.value;
-                ctx.fillText(' ', currentX, currentY);
-                currentX += ctx.measureText(' ').width;
-              }
+            // Draw text with highlighting and different sizes
+            lines.forEach((line, lineIndex) => {
+              let currentX = startX;
+              const currentY = startY + lineIndex * lineHeight;
               
-              // Draw word with appropriate color and font size
-              ctx.font = `bold ${part.fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
-              ctx.fillStyle = part.highlight ? highlightColorInput.value : textColorInput.value;
-              ctx.fillText(part.text, currentX, currentY);
-              
-              currentX += ctx.measureText(part.text).width;
+              line.forEach((part, wordIndex) => {
+                // Add space between words (except first word)
+                if (wordIndex > 0) {
+                  ctx.font = `bold ${fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
+                  ctx.fillStyle = textColorInput.value;
+                  ctx.fillText(' ', currentX, currentY);
+                  currentX += ctx.measureText(' ').width;
+                }
+                
+                // Draw word with appropriate color and font size
+                ctx.font = `bold ${part.fontSize}px 'Noto Sans Devanagari', 'Inter', sans-serif`;
+                ctx.fillStyle = part.highlight ? highlightColorInput.value : textColorInput.value;
+                ctx.fillText(part.text, currentX, currentY);
+                
+                currentX += ctx.measureText(part.text).width;
+              });
             });
-          });
+          }
 
           // Draw platform logo (top left) - CONSISTENT SIZE
           ctx.fillStyle = platform.logo.color;
@@ -1067,6 +1075,23 @@
               ctx.globalAlpha = 1.0;
             };
             logoImg.src = uiLogoImg.src;
+          }
+
+          // Draw center watermark with low opacity
+          if (centerWatermarkImg && centerWatermarkImg.src) {
+            const watermarkImg = new Image();
+            watermarkImg.onload = function() {
+              // Calculate dimensions to maintain aspect ratio
+              const watermarkWidth = logoSize.watermark;
+              const watermarkHeight = (watermarkImg.height * watermarkWidth) / watermarkImg.width;
+              const watermarkX = (canvas.width - watermarkWidth) / 2;
+              const watermarkY = (canvas.height - watermarkHeight) / 2;
+              
+              ctx.globalAlpha = 0.3; // Low opacity
+              ctx.drawImage(watermarkImg, watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+              ctx.globalAlpha = 1.0;
+            };
+            watermarkImg.src = centerWatermarkImg.src;
           }
 
           // Draw bottom brand (platform logo + Vikas Jajim)
@@ -1442,6 +1467,31 @@
             ctx.globalAlpha = 1.0;
           }
 
+          // Load and draw center watermark with low opacity
+          let watermarkImg = null;
+          const watermarkSrc = centerWatermarkImg && centerWatermarkImg.src ? centerWatermarkImg.src : null;
+          
+          if (watermarkSrc) { 
+            try { 
+              watermarkImg = await loadImage(watermarkSrc, true); 
+            } catch (e) { 
+              console.warn('Center watermark failed to load', e.message); 
+              watermarkImg = null; 
+            } 
+          }
+          
+          if (watermarkImg) {
+            // Calculate dimensions to maintain aspect ratio
+            const watermarkWidth = logoSize.watermark;
+            const watermarkHeight = (watermarkImg.height * watermarkWidth) / watermarkImg.width;
+            const watermarkX = (canvas.width - watermarkWidth) / 2;
+            const watermarkY = (canvas.height - watermarkHeight) / 2;
+            
+            ctx.globalAlpha = 0.3; // Low opacity
+            ctx.drawImage(watermarkImg, watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+            ctx.globalAlpha = 1.0;
+          }
+
           updateProgress(85);
 
           // Draw bottom brand (platform logo + Vikas Jajim)
@@ -1543,4 +1593,3 @@
   </script>
 </body>
 </html>
-
