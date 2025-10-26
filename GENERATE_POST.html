@@ -358,13 +358,23 @@
         <span>Logo will be added to the top right corner</span>
       </div>
 
+      <div class="overlay-preview watermark-preview">
+        <h3>Vikas Jajim Watermark (Center)</h3>
+        <img id="uiWatermark" src="vikas_jajim_watermark.png" alt="Watermark" style="width:120px;height:60px;object-fit:contain;">
+        <span>Watermark will be added to the center with low opacity</span>
+      </div>
+
       <div class="overlay-preview bottom-brand-preview">
-        <h3>Platform & Brand (Bottom)</h3>
-        <div id="bottomBrandPreview" style="width:140px;height:48px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:8px;">
-          <i class="fab fa-youtube" style="font-size:20px;color:#ff0000;margin-right:5px;"></i>
-          <span style="font-size:12px;color:#fff;">/ Vikas Jajim</span>
+        <h3>All Platforms & Brand (Bottom)</h3>
+        <div id="bottomBrandPreview" style="width:180px;height:48px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:8px; gap: 5px; flex-wrap: wrap;">
+          <i class="fab fa-youtube" style="font-size:16px;color:#ff0000;"></i>
+          <i class="fab fa-spotify" style="font-size:16px;color:#1DB954;"></i>
+          <i class="fab fa-facebook" style="font-size:16px;color:#1877F2;"></i>
+          <i class="fab fa-instagram" style="font-size:16px;color:#E4405F;"></i>
+          <i class="fab fa-twitter" style="font-size:16px;color:#1DA1F2;"></i>
+          <span style="font-size:10px;color:#fff;">/ Vikas Jajim</span>
         </div>
-        <span>Platform logo and Vikas Jajim will be added at the bottom</span>
+        <span>All platform logos and Vikas Jajim will be added at the bottom</span>
       </div>
     </div>
 
@@ -403,6 +413,7 @@
       const platformLogoPreview = document.getElementById('platformLogoPreview');
       const bottomBrandPreview = document.getElementById('bottomBrandPreview');
       const uiLogoImg = document.getElementById('uiLogo');
+      const uiWatermarkImg = document.getElementById('uiWatermark');
       const telegramStatus = document.getElementById('telegramStatus');
       
       // Action buttons
@@ -472,6 +483,15 @@
         }
       };
 
+      // All platform logos for bottom section
+      const allPlatforms = [
+        { icon: 'fab fa-youtube', color: '#ff0000', char: '' },
+        { icon: 'fab fa-spotify', color: '#1DB954', char: '' },
+        { icon: 'fab fa-facebook', color: '#1877F2', char: '' },
+        { icon: 'fab fa-instagram', color: '#E4405F', char: '' },
+        { icon: 'fab fa-twitter', color: '#1DA1F2', char: '' }
+      ];
+
       // Action button event listeners
       copyBtn.addEventListener('click', copyText);
       clearBtn.addEventListener('click', clearText);
@@ -485,7 +505,6 @@
             btn.classList.add('active');
             selectedPlatform = btn.dataset.platform;
             updatePlatformLogoPreview();
-            updateBottomBrandPreview();
             if (selectedImage || textInput.value.trim()) {
               updatePreview();
             }
@@ -516,36 +535,6 @@
       function updatePlatformLogoPreview() {
         const platform = platforms[selectedPlatform];
         platformLogoPreview.innerHTML = `<i class="${platform.logo.icon}" style="font-size:40px;color:${platform.logo.color};"></i>`;
-      }
-
-      // Update bottom brand preview
-      function updateBottomBrandPreview() {
-        const platform = platforms[selectedPlatform];
-        let iconChar;
-        switch(selectedPlatform) {
-          case 'youtube':
-          case 'youtube-shorts': 
-            iconChar = ''; 
-            break;
-          case 'spotify': 
-            iconChar = ''; 
-            break;
-          case 'facebook': 
-            iconChar = ''; 
-            break;
-          case 'instagram':
-          case 'instagram-reels':
-          case 'instagram-16-9': 
-            iconChar = ''; 
-            break;
-          default: 
-            iconChar = '';
-        }
-        
-        bottomBrandPreview.innerHTML = `
-          <i class="${platform.logo.icon}" style="font-size:20px;color:${platform.logo.color};margin-right:5px;"></i>
-          <span style="font-size:12px;color:#fff;">/ Vikas Jajim</span>
-        `;
       }
 
       // Copy text function
@@ -1069,47 +1058,57 @@
             logoImg.src = uiLogoImg.src;
           }
 
-          // Draw bottom brand (platform logo + Vikas Jajim)
-          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
-          ctx.fillStyle = platform.logo.color;
-          
-          // Set the correct icon based on platform
-          let bottomIconChar;
-          switch(selectedPlatform) {
-            case 'youtube':
-            case 'youtube-shorts': 
-              bottomIconChar = ''; 
-              break;
-            case 'spotify': 
-              bottomIconChar = ''; 
-              break;
-            case 'facebook': 
-              bottomIconChar = ''; 
-              break;
-            case 'instagram':
-            case 'instagram-reels':
-            case 'instagram-16-9': 
-              bottomIconChar = ''; 
-              break;
-            default: 
-              bottomIconChar = '';
+          // Draw Vikas Jajim watermark (center)
+          if (uiWatermarkImg && uiWatermarkImg.src) {
+            const watermarkImg = new Image();
+            watermarkImg.onload = function() {
+              const wmWidth = canvas.width * 0.25;
+              const wmHeight = (watermarkImg.height * wmWidth) / watermarkImg.width;
+              const wmX = (canvas.width - wmWidth) / 2;
+              const wmY = (canvas.height - wmHeight) / 2;
+              ctx.globalAlpha = 0.28;
+              ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
+              ctx.globalAlpha = 1.0;
+            };
+            watermarkImg.src = uiWatermarkImg.src;
           }
-          
-          const textMetrics = ctx.measureText(bottomIconChar);
-          const iconWidth = textMetrics.width;
+
+          // Draw all platform logos at the bottom
+          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+
+          // Calculate total width of all platform icons
+          let totalIconsWidth = 0;
+          allPlatforms.forEach(platform => {
+            totalIconsWidth += ctx.measureText(platform.char).width + 8; // 8px gap between icons
+          });
+
+          // Calculate text width
+          ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
           const textWidth = ctx.measureText('/ Vikas Jajim').width;
-          const totalBottomWidth = iconWidth + textWidth + 10; // 10px gap
           
-          const bottomX = (canvas.width - totalBottomWidth) / 2;
-          const bottomY = canvas.height - logoSize.bottomBrand - logoSize.margin;
+          // Total width of bottom section
+          const totalBottomWidth = totalIconsWidth + textWidth + 10; // 10px gap between icons and text
           
-          // Draw platform icon
-          ctx.fillText(bottomIconChar, bottomX, bottomY);
-          
-          // Draw "/ Vikas Jajim" text
+          // Starting position to center the entire bottom section
+          const startX = (canvas.width - totalBottomWidth) / 2;
+          const y = canvas.height - logoSize.bottomBrand - logoSize.margin;
+
+          let currentX = startX;
+
+          // Draw each platform icon
+          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
+          allPlatforms.forEach(platform => {
+            ctx.fillStyle = platform.color;
+            ctx.fillText(platform.char, currentX, y);
+            currentX += ctx.measureText(platform.char).width + 8; // 8px gap
+          });
+
+          // Draw the "/ Vikas Jajim" text
           ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
           ctx.fillStyle = '#ffffff';
-          ctx.fillText('/ Vikas Jajim', bottomX + iconWidth + 10, bottomY + (logoSize.bottomBrand * 0.15));
+          ctx.fillText('/ Vikas Jajim', currentX, y);
 
           // Set preview image
           imagePreview.src = canvas.toDataURL('image/png');
@@ -1444,47 +1443,65 @@
 
           updateProgress(85);
 
-          // Draw bottom brand (platform logo + Vikas Jajim)
-          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
-          ctx.fillStyle = platform.logo.color;
+          // Load and draw Vikas Jajim watermark (center)
+          let watermarkImg = null;
+          const watermarkSrc = uiWatermarkImg && uiWatermarkImg.src ? uiWatermarkImg.src : null;
           
-          // Set the correct icon based on platform
-          let bottomIconChar;
-          switch(selectedPlatform) {
-            case 'youtube':
-            case 'youtube-shorts': 
-              bottomIconChar = ''; 
-              break;
-            case 'spotify': 
-              bottomIconChar = ''; 
-              break;
-            case 'facebook': 
-              bottomIconChar = ''; 
-              break;
-            case 'instagram':
-            case 'instagram-reels':
-            case 'instagram-16-9': 
-              bottomIconChar = ''; 
-              break;
-            default: 
-              bottomIconChar = '';
+          if (watermarkSrc) { 
+            try { 
+              watermarkImg = await loadImage(watermarkSrc, true); 
+            } catch (e) { 
+              console.warn('Watermark failed to load', e.message); 
+              watermarkImg = null; 
+            } 
           }
           
-          const textMetrics = ctx.measureText(bottomIconChar);
-          const iconWidth = textMetrics.width;
+          if (watermarkImg) {
+            const wmWidth = canvas.width * 0.25;
+            const wmHeight = (watermarkImg.height * wmWidth) / watermarkImg.width;
+            const wmX = (canvas.width - wmWidth) / 2;
+            const wmY = (canvas.height - wmHeight) / 2;
+            ctx.globalAlpha = 0.28;
+            ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
+            ctx.globalAlpha = 1.0;
+          }
+
+          // Draw all platform logos at the bottom
+          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+
+          // Calculate total width of all platform icons
+          let totalIconsWidth = 0;
+          allPlatforms.forEach(platform => {
+            totalIconsWidth += ctx.measureText(platform.char).width + 8; // 8px gap between icons
+          });
+
+          // Calculate text width
+          ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
           const textWidth = ctx.measureText('/ Vikas Jajim').width;
-          const totalBottomWidth = iconWidth + textWidth + 10; // 10px gap
           
-          const bottomX = (canvas.width - totalBottomWidth) / 2;
-          const bottomY = canvas.height - logoSize.bottomBrand - logoSize.margin;
+          // Total width of bottom section
+          const totalBottomWidth = totalIconsWidth + textWidth + 10; // 10px gap between icons and text
           
-          // Draw platform icon
-          ctx.fillText(bottomIconChar, bottomX, bottomY);
-          
-          // Draw "/ Vikas Jajim" text
+          // Starting position to center the entire bottom section
+          const startX = (canvas.width - totalBottomWidth) / 2;
+          const y = canvas.height - logoSize.bottomBrand - logoSize.margin;
+
+          let currentX = startX;
+
+          // Draw each platform icon
+          ctx.font = `600 ${logoSize.bottomBrand}px FontAwesome`;
+          allPlatforms.forEach(platform => {
+            ctx.fillStyle = platform.color;
+            ctx.fillText(platform.char, currentX, y);
+            currentX += ctx.measureText(platform.char).width + 8; // 8px gap
+          });
+
+          // Draw the "/ Vikas Jajim" text
           ctx.font = `500 ${logoSize.bottomBrand * 0.7}px 'Inter', sans-serif`;
           ctx.fillStyle = '#ffffff';
-          ctx.fillText('/ Vikas Jajim', bottomX + iconWidth + 10, bottomY + (logoSize.bottomBrand * 0.15));
+          ctx.fillText('/ Vikas Jajim', currentX, y);
 
           updateProgress(92);
 
@@ -1538,7 +1555,6 @@
 
       // Initialize platform logo preview
       updatePlatformLogoPreview();
-      updateBottomBrandPreview();
     });
   </script>
 </body>
