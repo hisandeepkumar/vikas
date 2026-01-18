@@ -193,133 +193,6 @@
       font-size: 1rem;
     }
     
-    /* NEW: Overlay Settings Section */
-    .overlay-settings {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 12px;
-      padding: 16px;
-      margin: 20px 0;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      display: none;
-    }
-    .overlay-settings h3 {
-      color: #f0f0f0;
-      margin-bottom: 15px;
-      font-size: 1.2rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .overlay-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .overlay-tab {
-      padding: 10px 16px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #f0f0f0;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      flex: 1;
-      min-width: 150px;
-      text-align: center;
-    }
-    .overlay-tab.active {
-      background: rgba(91, 134, 229, 0.3);
-      border-color: #5b86e5;
-    }
-    .overlay-tab:hover:not(.active) {
-      background: rgba(255, 255, 255, 0.12);
-    }
-    .settings-panel {
-      display: none;
-    }
-    .settings-panel.active {
-      display: block;
-    }
-    .setting-group {
-      margin-bottom: 15px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .setting-group h4 {
-      color: #f0f0f0;
-      margin-bottom: 10px;
-      font-size: 1rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .slider-control {
-      margin-bottom: 12px;
-    }
-    .slider-control label {
-      display: block;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-    }
-    .slider-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .slider-container input[type="range"] {
-      flex: 1;
-      height: 6px;
-      border-radius: 3px;
-      background: rgba(255,255,255,0.1);
-      outline: none;
-    }
-    .slider-container input[type="range"]::-webkit-slider-thumb {
-      appearance: none;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #5b86e5;
-      cursor: pointer;
-    }
-    .slider-container input[type="range"]::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #5b86e5;
-      cursor: pointer;
-      border: none;
-    }
-    .slider-value {
-      color: #f0f0f0;
-      font-weight: 500;
-      min-width: 40px;
-      text-align: right;
-      font-size: 0.9rem;
-    }
-    .toggle-control {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .toggle-control input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #5b86e5;
-    }
-    .toggle-control label {
-      color: #f0f0f0;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-    
     /* Overlays Container */
     .overlays-container { 
       display: flex; 
@@ -483,8 +356,6 @@
       .btn { width:220px; height:50px; font-size:14px; } 
       .overlay-preview { width: 100%; max-width: 200px; }
       .pdf-details { grid-template-columns: 1fr; }
-      .overlay-tabs { flex-direction: column; }
-      .overlay-tab { min-width: 100%; }
     }
   </style>
 </head>
@@ -531,161 +402,6 @@
         <div class="pdf-detail">
           <label>File Size:</label>
           <span id="pdfSize">-</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- NEW: Overlay Settings Section -->
-    <div class="overlay-settings" id="overlaySettings">
-      <h3><i class="fas fa-sliders-h"></i> Overlay Settings</h3>
-      
-      <div class="overlay-tabs">
-        <div class="overlay-tab active" data-tab="logo">Logo Settings</div>
-        <div class="overlay-tab" data-tab="watermark">Watermark Settings</div>
-        <div class="overlay-tab" data-tab="notebook">Notebook Image Settings</div>
-      </div>
-
-      <!-- Logo Settings Panel -->
-      <div class="settings-panel active" id="logoPanel">
-        <div class="toggle-control">
-          <input type="checkbox" id="logoEnabled" checked>
-          <label for="logoEnabled">Enable Logo</label>
-        </div>
-        
-        <div class="setting-group">
-          <h4><i class="fas fa-arrows-alt-h"></i> Size & Position</h4>
-          
-          <div class="slider-control">
-            <label for="logoSize">Size (% of image width)</label>
-            <div class="slider-container">
-              <input type="range" id="logoSize" min="1" max="30" value="15" step="0.5">
-              <span class="slider-value" id="logoSizeValue">15%</span>
-            </div>
-          </div>
-          
-          <div class="slider-control">
-            <label for="logoX">Horizontal Position (% from right)</label>
-            <div class="slider-container">
-              <input type="range" id="logoX" min="0" max="10" value="2" step="0.1">
-              <span class="slider-value" id="logoXValue">2%</span>
-            </div>
-          </div>
-          
-          <div class="slider-control">
-            <label for="logoY">Vertical Position (% from top)</label>
-            <div class="slider-container">
-              <input type="range" id="logoY" min="0" max="10" value="2" step="0.1">
-              <span class="slider-value" id="logoYValue">2%</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="setting-group">
-          <h4><i class="fas fa-adjust"></i> Appearance</h4>
-          
-          <div class="slider-control">
-            <label for="logoOpacity">Opacity (%)</label>
-            <div class="slider-container">
-              <input type="range" id="logoOpacity" min="0" max="100" value="90">
-              <span class="slider-value" id="logoOpacityValue">90%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Watermark Settings Panel -->
-      <div class="settings-panel" id="watermarkPanel">
-        <div class="toggle-control">
-          <input type="checkbox" id="watermarkEnabled" checked>
-          <label for="watermarkEnabled">Enable Watermark</label>
-        </div>
-        
-        <div class="setting-group">
-          <h4><i class="fas fa-arrows-alt-h"></i> Size & Position</h4>
-          
-          <div class="slider-control">
-            <label for="watermarkSize">Size (% of image width)</label>
-            <div class="slider-container">
-              <input type="range" id="watermarkSize" min="1" max="50" value="25" step="0.5">
-              <span class="slider-value" id="watermarkSizeValue">25%</span>
-            </div>
-          </div>
-          
-          <div class="slider-control">
-            <label for="watermarkX">Horizontal Position (% from center)</label>
-            <div class="slider-container">
-              <input type="range" id="watermarkX" min="-10" max="10" value="0" step="0.5">
-              <span class="slider-value" id="watermarkXValue">0%</span>
-            </div>
-          </div>
-          
-          <div class="slider-control">
-            <label for="watermarkY">Vertical Position (% from center)</label>
-            <div class="slider-container">
-              <input type="range" id="watermarkY" min="-10" max="10" value="0" step="0.5">
-              <span class="slider-value" id="watermarkYValue">0%</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="setting-group">
-          <h4><i class="fas fa-adjust"></i> Appearance</h4>
-          
-          <div class="slider-control">
-            <label for="watermarkOpacity">Opacity (%)</label>
-            <div class="slider-container">
-              <input type="range" id="watermarkOpacity" min="0" max="100" value="28">
-              <span class="slider-value" id="watermarkOpacityValue">28%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Notebook Image Settings Panel -->
-      <div class="settings-panel" id="notebookPanel">
-        <div class="toggle-control">
-          <input type="checkbox" id="notebookEnabled" checked>
-          <label for="notebookEnabled">Enable Notebook Image</label>
-        </div>
-        
-        <div class="setting-group">
-          <h4><i class="fas fa-arrows-alt-h"></i> Size & Position</h4>
-          
-          <div class="slider-control">
-            <label for="notebookSize">Size (% of image width)</label>
-            <div class="slider-container">
-              <input type="range" id="notebookSize" min="1" max="30" value="10" step="0.5">
-              <span class="slider-value" id="notebookSizeValue">10%</span>
-            </div>
-          </div>
-          
-          <div class="slider-control">
-            <label for="notebookX">Horizontal Position (% from right)</label>
-            <div class="slider-container">
-              <input type="range" id="notebookX" min="0" max="10" value="2" step="0.1">
-              <span class="slider-value" id="notebookXValue">2%</span>
-            </div>
-          </div>
-          
-          <div class="slider-control">
-            <label for="notebookY">Vertical Position (% from bottom)</label>
-            <div class="slider-container">
-              <input type="range" id="notebookY" min="0" max="10" value="2" step="0.1">
-              <span class="slider-value" id="notebookYValue">2%</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="setting-group">
-          <h4><i class="fas fa-adjust"></i> Appearance</h4>
-          
-          <div class="slider-control">
-            <label for="notebookOpacity">Opacity (%)</label>
-            <div class="slider-container">
-              <input type="range" id="notebookOpacity" min="0" max="100" value="90">
-              <span class="slider-value" id="notebookOpacityValue">90%</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -769,42 +485,6 @@
       const uiLogoImg = document.getElementById('uiLogo');
       const uiWatermarkImg = document.getElementById('uiWatermark');
       const uiNotebookImg = document.getElementById('uiNotebook');
-      const overlaySettings = document.getElementById('overlaySettings');
-
-      // NEW: Overlay Settings Elements
-      const logoEnabled = document.getElementById('logoEnabled');
-      const logoSize = document.getElementById('logoSize');
-      const logoSizeValue = document.getElementById('logoSizeValue');
-      const logoX = document.getElementById('logoX');
-      const logoXValue = document.getElementById('logoXValue');
-      const logoY = document.getElementById('logoY');
-      const logoYValue = document.getElementById('logoYValue');
-      const logoOpacity = document.getElementById('logoOpacity');
-      const logoOpacityValue = document.getElementById('logoOpacityValue');
-      
-      const watermarkEnabled = document.getElementById('watermarkEnabled');
-      const watermarkSize = document.getElementById('watermarkSize');
-      const watermarkSizeValue = document.getElementById('watermarkSizeValue');
-      const watermarkX = document.getElementById('watermarkX');
-      const watermarkXValue = document.getElementById('watermarkXValue');
-      const watermarkY = document.getElementById('watermarkY');
-      const watermarkYValue = document.getElementById('watermarkYValue');
-      const watermarkOpacity = document.getElementById('watermarkOpacity');
-      const watermarkOpacityValue = document.getElementById('watermarkOpacityValue');
-      
-      const notebookEnabled = document.getElementById('notebookEnabled');
-      const notebookSize = document.getElementById('notebookSize');
-      const notebookSizeValue = document.getElementById('notebookSizeValue');
-      const notebookX = document.getElementById('notebookX');
-      const notebookXValue = document.getElementById('notebookXValue');
-      const notebookY = document.getElementById('notebookY');
-      const notebookYValue = document.getElementById('notebookYValue');
-      const notebookOpacity = document.getElementById('notebookOpacity');
-      const notebookOpacityValue = document.getElementById('notebookOpacityValue');
-
-      // Overlay Settings Tabs
-      const overlayTabs = document.querySelectorAll('.overlay-tab');
-      const settingsPanels = document.querySelectorAll('.settings-panel');
 
       // Application State
       let pdfDoc = null;
@@ -817,159 +497,40 @@
       let notebookImage = null;
       let pdfData = null;
 
-      // NEW: Overlay Settings State
-      const overlaySettingsState = {
-        logo: {
-          enabled: true,
-          size: 15,    // % of image width
-          x: 2,        // % from right
-          y: 2,        // % from top
-          opacity: 90  // %
-        },
-        watermark: {
-          enabled: true,
-          size: 25,    // % of image width
-          x: 0,        // % from center (positive = right, negative = left)
-          y: 0,        // % from center (positive = down, negative = up)
-          opacity: 28  // %
-        },
-        notebook: {
-          enabled: true,
-          size: 10,    // % of image width
-          x: 2,        // % from right
-          y: 2,        // % from bottom
-          opacity: 90  // %
-        }
+      // =====================================================================
+      // FIXED OVERLAY SETTINGS - ADJUST THESE VALUES AS NEEDED
+      // =====================================================================
+      
+      // Logo Settings (Top Right)
+      const LOGO_SETTINGS = {
+        enabled: true,        // Enable or disable logo
+        size: 15,             // Size as percentage of image width (1-30)
+        x: 2,                 // Horizontal position from right edge (percentage, 0-10)
+        y: 2,                 // Vertical position from top edge (percentage, 0-10)
+        opacity: 90           // Opacity percentage (0-100)
       };
-
-      // Initialize overlay settings UI
-      function initializeOverlaySettings() {
-        // Logo settings
-        logoEnabled.checked = overlaySettingsState.logo.enabled;
-        logoSize.value = overlaySettingsState.logo.size;
-        logoSizeValue.textContent = `${overlaySettingsState.logo.size}%`;
-        logoX.value = overlaySettingsState.logo.x;
-        logoXValue.textContent = `${overlaySettingsState.logo.x}%`;
-        logoY.value = overlaySettingsState.logo.y;
-        logoYValue.textContent = `${overlaySettingsState.logo.y}%`;
-        logoOpacity.value = overlaySettingsState.logo.opacity;
-        logoOpacityValue.textContent = `${overlaySettingsState.logo.opacity}%`;
-        
-        // Watermark settings
-        watermarkEnabled.checked = overlaySettingsState.watermark.enabled;
-        watermarkSize.value = overlaySettingsState.watermark.size;
-        watermarkSizeValue.textContent = `${overlaySettingsState.watermark.size}%`;
-        watermarkX.value = overlaySettingsState.watermark.x;
-        watermarkXValue.textContent = `${overlaySettingsState.watermark.x}%`;
-        watermarkY.value = overlaySettingsState.watermark.y;
-        watermarkYValue.textContent = `${overlaySettingsState.watermark.y}%`;
-        watermarkOpacity.value = overlaySettingsState.watermark.opacity;
-        watermarkOpacityValue.textContent = `${overlaySettingsState.watermark.opacity}%`;
-        
-        // Notebook settings
-        notebookEnabled.checked = overlaySettingsState.notebook.enabled;
-        notebookSize.value = overlaySettingsState.notebook.size;
-        notebookSizeValue.textContent = `${overlaySettingsState.notebook.size}%`;
-        notebookX.value = overlaySettingsState.notebook.x;
-        notebookXValue.textContent = `${overlaySettingsState.notebook.x}%`;
-        notebookY.value = overlaySettingsState.notebook.y;
-        notebookYValue.textContent = `${overlaySettingsState.notebook.y}%`;
-        notebookOpacity.value = overlaySettingsState.notebook.opacity;
-        notebookOpacityValue.textContent = `${overlaySettingsState.notebook.opacity}%`;
-        
-        // Add event listeners
-        // Logo events
-        logoEnabled.addEventListener('change', () => {
-          overlaySettingsState.logo.enabled = logoEnabled.checked;
-        });
-        
-        logoSize.addEventListener('input', () => {
-          overlaySettingsState.logo.size = parseFloat(logoSize.value);
-          logoSizeValue.textContent = `${overlaySettingsState.logo.size}%`;
-        });
-        
-        logoX.addEventListener('input', () => {
-          overlaySettingsState.logo.x = parseFloat(logoX.value);
-          logoXValue.textContent = `${overlaySettingsState.logo.x}%`;
-        });
-        
-        logoY.addEventListener('input', () => {
-          overlaySettingsState.logo.y = parseFloat(logoY.value);
-          logoYValue.textContent = `${overlaySettingsState.logo.y}%`;
-        });
-        
-        logoOpacity.addEventListener('input', () => {
-          overlaySettingsState.logo.opacity = parseFloat(logoOpacity.value);
-          logoOpacityValue.textContent = `${overlaySettingsState.logo.opacity}%`;
-        });
-        
-        // Watermark events
-        watermarkEnabled.addEventListener('change', () => {
-          overlaySettingsState.watermark.enabled = watermarkEnabled.checked;
-        });
-        
-        watermarkSize.addEventListener('input', () => {
-          overlaySettingsState.watermark.size = parseFloat(watermarkSize.value);
-          watermarkSizeValue.textContent = `${overlaySettingsState.watermark.size}%`;
-        });
-        
-        watermarkX.addEventListener('input', () => {
-          overlaySettingsState.watermark.x = parseFloat(watermarkX.value);
-          watermarkXValue.textContent = `${overlaySettingsState.watermark.x}%`;
-        });
-        
-        watermarkY.addEventListener('input', () => {
-          overlaySettingsState.watermark.y = parseFloat(watermarkY.value);
-          watermarkYValue.textContent = `${overlaySettingsState.watermark.y}%`;
-        });
-        
-        watermarkOpacity.addEventListener('input', () => {
-          overlaySettingsState.watermark.opacity = parseFloat(watermarkOpacity.value);
-          watermarkOpacityValue.textContent = `${overlaySettingsState.watermark.opacity}%`;
-        });
-        
-        // Notebook events
-        notebookEnabled.addEventListener('change', () => {
-          overlaySettingsState.notebook.enabled = notebookEnabled.checked;
-        });
-        
-        notebookSize.addEventListener('input', () => {
-          overlaySettingsState.notebook.size = parseFloat(notebookSize.value);
-          notebookSizeValue.textContent = `${overlaySettingsState.notebook.size}%`;
-        });
-        
-        notebookX.addEventListener('input', () => {
-          overlaySettingsState.notebook.x = parseFloat(notebookX.value);
-          notebookXValue.textContent = `${overlaySettingsState.notebook.x}%`;
-        });
-        
-        notebookY.addEventListener('input', () => {
-          overlaySettingsState.notebook.y = parseFloat(notebookY.value);
-          notebookYValue.textContent = `${overlaySettingsState.notebook.y}%`;
-        });
-        
-        notebookOpacity.addEventListener('input', () => {
-          overlaySettingsState.notebook.opacity = parseFloat(notebookOpacity.value);
-          notebookOpacityValue.textContent = `${overlaySettingsState.notebook.opacity}%`;
-        });
-        
-        // Tab switching
-        overlayTabs.forEach(tab => {
-          tab.addEventListener('click', () => {
-            const tabId = tab.dataset.tab;
-            
-            // Update active tab
-            overlayTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            // Show corresponding panel
-            settingsPanels.forEach(panel => {
-              panel.classList.remove('active');
-            });
-            document.getElementById(`${tabId}Panel`).classList.add('active');
-          });
-        });
-      }
+      
+      // Watermark Settings (Center)
+      const WATERMARK_SETTINGS = {
+        enabled: true,        // Enable or disable watermark
+        size: 25,             // Size as percentage of image width (1-50)
+        x: 0,                 // Horizontal offset from center (percentage, -10 to +10, positive = right)
+        y: 0,                 // Vertical offset from center (percentage, -10 to +10, positive = down)
+        opacity: 28           // Opacity percentage (0-100)
+      };
+      
+      // Notebook Image Settings (Bottom Right)
+      const NOTEBOOK_SETTINGS = {
+        enabled: true,        // Enable or disable notebook image
+        size: 10,             // Size as percentage of image width (1-30)
+        x: 2,                 // Horizontal position from right edge (percentage, 0-10)
+        y: 2,                 // Vertical position from bottom edge (percentage, 0-10)
+        opacity: 90           // Opacity percentage (0-100)
+      };
+      
+      // =====================================================================
+      // END OF SETTINGS
+      // =====================================================================
 
       // Load overlay images
       function loadOverlayImages() {
@@ -1142,9 +703,6 @@
           pdfSize.textContent = formatFileSize(file.size);
           pdfInfo.style.display = 'block';
           
-          // Show overlay settings
-          overlaySettings.style.display = 'block';
-          
           // Update custom filename placeholder
           customFilename.placeholder = `Leave empty to use: ${pdfFileName}`;
           
@@ -1273,7 +831,7 @@
         });
       }
 
-      // Add overlays to image using settings
+      // Add overlays to image using fixed settings
       async function addOverlaysToImage(ctx, canvas) {
         return new Promise((resolve) => {
           // Wait for images to load
@@ -1283,35 +841,35 @@
                 (!notebookImage || notebookImage.complete)) {
               
               // Add logo (top right)
-              if (overlaySettingsState.logo.enabled && logoImage && logoImage.complete) {
-                const logoWidth = canvas.width * (overlaySettingsState.logo.size / 100);
+              if (LOGO_SETTINGS.enabled && logoImage && logoImage.complete) {
+                const logoWidth = canvas.width * (LOGO_SETTINGS.size / 100);
                 const logoHeight = (logoImage.height * logoWidth) / logoImage.width;
-                const logoX = canvas.width - logoWidth - (canvas.width * (overlaySettingsState.logo.x / 100));
-                const logoY = canvas.height * (overlaySettingsState.logo.y / 100);
+                const logoX = canvas.width - logoWidth - (canvas.width * (LOGO_SETTINGS.x / 100));
+                const logoY = canvas.height * (LOGO_SETTINGS.y / 100);
                 
-                ctx.globalAlpha = overlaySettingsState.logo.opacity / 100;
+                ctx.globalAlpha = LOGO_SETTINGS.opacity / 100;
                 ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
               }
               
               // Add watermark (center)
-              if (overlaySettingsState.watermark.enabled && watermarkImage && watermarkImage.complete) {
-                const wmWidth = canvas.width * (overlaySettingsState.watermark.size / 100);
+              if (WATERMARK_SETTINGS.enabled && watermarkImage && watermarkImage.complete) {
+                const wmWidth = canvas.width * (WATERMARK_SETTINGS.size / 100);
                 const wmHeight = (watermarkImage.height * wmWidth) / watermarkImage.width;
-                const wmX = (canvas.width / 2) - (wmWidth / 2) + (canvas.width * (overlaySettingsState.watermark.x / 100));
-                const wmY = (canvas.height / 2) - (wmHeight / 2) + (canvas.height * (overlaySettingsState.watermark.y / 100));
+                const wmX = (canvas.width / 2) - (wmWidth / 2) + (canvas.width * (WATERMARK_SETTINGS.x / 100));
+                const wmY = (canvas.height / 2) - (wmHeight / 2) + (canvas.height * (WATERMARK_SETTINGS.y / 100));
                 
-                ctx.globalAlpha = overlaySettingsState.watermark.opacity / 100;
+                ctx.globalAlpha = WATERMARK_SETTINGS.opacity / 100;
                 ctx.drawImage(watermarkImage, wmX, wmY, wmWidth, wmHeight);
               }
               
               // Add notebook image (bottom right)
-              if (overlaySettingsState.notebook.enabled && notebookImage && notebookImage.complete) {
-                const nbWidth = canvas.width * (overlaySettingsState.notebook.size / 100);
+              if (NOTEBOOK_SETTINGS.enabled && notebookImage && notebookImage.complete) {
+                const nbWidth = canvas.width * (NOTEBOOK_SETTINGS.size / 100);
                 const nbHeight = (notebookImage.height * nbWidth) / notebookImage.width;
-                const nbX = canvas.width - nbWidth - (canvas.width * (overlaySettingsState.notebook.x / 100));
-                const nbY = canvas.height - nbHeight - (canvas.height * (overlaySettingsState.notebook.y / 100));
+                const nbX = canvas.width - nbWidth - (canvas.width * (NOTEBOOK_SETTINGS.x / 100));
+                const nbY = canvas.height - nbHeight - (canvas.height * (NOTEBOOK_SETTINGS.y / 100));
                 
-                ctx.globalAlpha = overlaySettingsState.notebook.opacity / 100;
+                ctx.globalAlpha = NOTEBOOK_SETTINGS.opacity / 100;
                 ctx.drawImage(notebookImage, nbX, nbY, nbWidth, nbHeight);
               }
               
@@ -1411,7 +969,6 @@
         fileInfoDisplay.style.display = 'none';
         sizeInfoDisplay.style.display = 'none';
         pdfInfo.style.display = 'none';
-        overlaySettings.style.display = 'none';
         pagePreview.style.display = 'none';
         downloadBtn.disabled = true;
         pdfDoc = null;
@@ -1427,9 +984,6 @@
       // Download button click event
       downloadBtn.addEventListener('click', generateAndDownloadZIP);
 
-      // Initialize overlay settings
-      initializeOverlaySettings();
-      
       // Initialize
       resetUI();
     });
