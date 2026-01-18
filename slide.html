@@ -478,7 +478,6 @@
       const customFilename = document.getElementById('customFilename');
       const pagePreview = document.getElementById('pagePreview');
       const previewCanvas = document.getElementById('previewCanvas');
-      const previewCtx = previewCanvas.getContext('2d');
       const currentPageSpan = document.getElementById('currentPage');
       const totalPagesSpan = document.getElementById('totalPages');
       const prevPageBtn = document.getElementById('prevPage');
@@ -496,7 +495,7 @@
       let logoImage = null;
       let watermarkImage = null;
       let notebookImage = null;
-      let imagesLoaded = false;
+      let pdfData = null;
 
       // Load overlay images
       function loadOverlayImages() {
@@ -507,39 +506,69 @@
           const onImageLoad = () => {
             loadedCount++;
             if (loadedCount === totalImages) {
-              imagesLoaded = true;
+              console.log('All overlay images loaded successfully');
               resolve();
             }
           };
 
-          const onImageError = (imgName) => {
-            console.warn(`${imgName} not found, using fallback`);
+          const onImageError = (imgName, src) => {
+            console.warn(`${imgName} not found at ${src}, creating fallback`);
+            // Create a fallback colored rectangle
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            
+            if (imgName === 'Logo') {
+              ctx.fillStyle = '#4A90E2';
+              ctx.fillRect(0, 0, 200, 100);
+              ctx.fillStyle = 'white';
+              ctx.font = '20px Arial';
+              ctx.fillText('LOGO', 70, 55);
+              logoImage = new Image();
+              logoImage.src = canvas.toDataURL();
+            } else if (imgName === 'Watermark') {
+              ctx.fillStyle = 'rgba(255,255,255,0.2)';
+              ctx.fillRect(0, 0, 200, 100);
+              ctx.fillStyle = 'rgba(0,0,0,0.5)';
+              ctx.font = '20px Arial';
+              ctx.fillText('WATERMARK', 40, 55);
+              watermarkImage = new Image();
+              watermarkImage.src = canvas.toDataURL();
+            } else if (imgName === 'Notebook Hide') {
+              ctx.fillStyle = '#FF6B6B';
+              ctx.fillRect(0, 0, 200, 100);
+              ctx.fillStyle = 'white';
+              ctx.font = '16px Arial';
+              ctx.fillText('NOTEBOOK', 60, 45);
+              ctx.fillText('HIDE', 75, 70);
+              notebookImage = new Image();
+              notebookImage.src = canvas.toDataURL();
+            }
+            
             loadedCount++;
             if (loadedCount === totalImages) {
-              imagesLoaded = true;
+              console.log('All overlay images loaded (with fallbacks)');
               resolve();
             }
           };
 
           // Load logo
           logoImage = new Image();
-          logoImage.crossOrigin = 'anonymous';
           logoImage.onload = onImageLoad;
-          logoImage.onerror = () => onImageError('Logo');
+          logoImage.onerror = () => onImageError('Logo', 'vikas_jajim_logo.png');
           logoImage.src = 'vikas_jajim_logo.png';
 
           // Load watermark
           watermarkImage = new Image();
-          watermarkImage.crossOrigin = 'anonymous';
           watermarkImage.onload = onImageLoad;
-          watermarkImage.onerror = () => onImageError('Watermark');
+          watermarkImage.onerror = () => onImageError('Watermark', 'vikas_jajim_watermark.png');
           watermarkImage.src = 'vikas_jajim_watermark.png';
 
           // Load notebook image
           notebookImage = new Image();
-          notebookImage.crossOrigin = 'anonymous';
           notebookImage.onload = onImageLoad;
-          notebookImage.onerror = () => onImageError('Notebook Hide');
+          notebookImage.onerror = () => onImageError('Notebook Hide', 'notebookhideimage.png');
           notebookImage.src = 'notebookhideimage.png';
         });
       }
@@ -621,15 +650,15 @@
           sizeInfoDisplay.textContent = `File Size: ${formatFileSize(file.size)}`;
           sizeInfoDisplay.style.display = 'block';
 
-          // Load overlay images if not already loaded
-          if (!imagesLoaded) {
-            await loadOverlayImages();
-          }
+          // Load overlay images
+          await loadOverlayImages();
 
-          // Load PDF document
+          // Store PDF data for later use
           const arrayBuffer = await file.arrayBuffer();
-          const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+          pdfData = arrayBuffer;
           
+          // Load PDF document for preview
+          const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
           pdfDoc = await loadingTask.promise;
           totalPages = pdfDoc.numPages;
           
@@ -665,18 +694,21 @@
       async function renderPage(pageNumber) {
         try {
           const page = await pdfDoc.getPage(pageNumber);
-          const viewport = page.getViewport({ scale: 1.5 }); // Reduced scale for preview
+          const viewport = page.getViewport({ scale: 1.5 });
           
           // Set canvas dimensions
           previewCanvas.width = viewport.width;
           previewCanvas.height = viewport.height;
           
+          const ctx = previewCanvas.getContext('2d');
+          
           // Clear canvas
-          previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
           
           // Render PDF page
           const renderContext = {
-            canvasContext: previewCtx,
+            canvasContext: ctx,
             viewport: viewport
           };
           
@@ -709,156 +741,126 @@
         }
       });
 
-      // Generate images from all PDF pages
-      async function generateImagesFromPDF() {
-        if (!pdfDoc) {
-          showStatus('No PDF loaded', 'error');
-          return null;
-        }
-
-        const images = [];
-        updateProgress(0);
-
-        try {
-          for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-            try {
-              // Update progress
-              updateProgress((pageNum / totalPages) * 100);
-              
-              // Get page
-              const page = await pdfDoc.getPage(pageNum);
-              
-              // Calculate scale for 4K resolution (3840 pixels width)
-              const viewport = page.getViewport({ scale: 1.0 });
-              const targetWidth = 3840; // 4K width
-              const targetHeight = Math.floor(viewport.height * (targetWidth / viewport.width));
-              const scale = targetWidth / viewport.width;
-              
-              // Create canvas for this page
-              const canvas = document.createElement('canvas');
-              canvas.width = targetWidth;
-              canvas.height = targetHeight;
-              
-              const ctx = canvas.getContext('2d');
-              
-              // Set white background
-              ctx.fillStyle = 'white';
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              
-              // Create scaled viewport
-              const scaledViewport = page.getViewport({ scale: scale });
-              
-              // Render PDF page to canvas
-              const renderContext = {
-                canvasContext: ctx,
-                viewport: scaledViewport
-              };
-              
-              await page.render(renderContext).promise;
-              
-              // Add overlays
-              addOverlaysToCanvas(ctx, canvas);
-              
-              // Convert canvas to blob
-              const blob = await new Promise((resolve, reject) => {
-                canvas.toBlob((blob) => {
-                  if (blob) {
-                    resolve(blob);
-                  } else {
-                    reject(new Error('Canvas to blob conversion failed'));
-                  }
-                }, 'image/png', 1.0);
-              });
-              
-              images.push({
-                pageNum: pageNum,
-                blob: blob,
-                width: canvas.width,
-                height: canvas.height
-              });
-              
-            } catch (pageError) {
-              console.error(`Error generating image for page ${pageNum}:`, pageError);
-              // Continue with next page
-              continue;
-            }
+      // Convert PDF page to image with overlays
+      async function convertPageToImage(pageNumber) {
+        return new Promise(async (resolve, reject) => {
+          try {
+            // Load PDF document for this page
+            const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+            const pdfDoc = await loadingTask.promise;
+            const page = await pdfDoc.getPage(pageNumber);
+            
+            // Calculate scale for 4K resolution
+            const viewport = page.getViewport({ scale: 1.0 });
+            const targetWidth = 3840; // 4K width
+            const scale = targetWidth / viewport.width;
+            const targetHeight = viewport.height * scale;
+            
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            const ctx = canvas.getContext('2d');
+            
+            // Fill with white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Render PDF to canvas
+            const renderContext = {
+              canvasContext: ctx,
+              viewport: page.getViewport({ scale: scale })
+            };
+            
+            await page.render(renderContext).promise;
+            
+            // Add overlays
+            await addOverlaysToImage(ctx, canvas);
+            
+            // Convert to blob
+            canvas.toBlob((blob) => {
+              if (blob) {
+                resolve({
+                  pageNum: pageNumber,
+                  blob: blob,
+                  filename: `${pdfFileName}-page${pageNumber}.png`
+                });
+              } else {
+                reject(new Error('Failed to create blob from canvas'));
+              }
+            }, 'image/png', 1.0);
+            
+          } catch (error) {
+            reject(error);
           }
-          
-          if (images.length === 0) {
-            showStatus('No images were generated from the PDF', 'error');
-            return null;
-          }
-          
-          updateProgress(100);
-          return images;
-          
-        } catch (error) {
-          console.error('Error generating images:', error);
-          showStatus('Error generating images', 'error');
-          return null;
-        }
+        });
       }
 
-      // Add overlays to canvas
-      function addOverlaysToCanvas(ctx, canvas) {
-        // Add logo (top right)
-        if (logoImage && logoImage.complete) {
-          const logoWidth = canvas.width * 0.15; // 15% of canvas width
-          const logoHeight = (logoImage.height * logoWidth) / logoImage.width;
-          const logoX = canvas.width - logoWidth - (canvas.width * 0.02); // 2% margin
-          const logoY = canvas.height * 0.02; // 2% margin
+      // Add overlays to image
+      async function addOverlaysToImage(ctx, canvas) {
+        return new Promise((resolve) => {
+          // Wait for images to load
+          const checkImagesLoaded = () => {
+            if ((!logoImage || logoImage.complete) && 
+                (!watermarkImage || watermarkImage.complete) && 
+                (!notebookImage || notebookImage.complete)) {
+              // Add logo (top right)
+              if (logoImage && logoImage.complete) {
+                const logoWidth = canvas.width * 0.15;
+                const logoHeight = (logoImage.height * logoWidth) / logoImage.width;
+                const logoX = canvas.width - logoWidth - (canvas.width * 0.02);
+                const logoY = canvas.height * 0.02;
+                
+                ctx.globalAlpha = 0.9;
+                ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
+              }
+              
+              // Add watermark (center)
+              if (watermarkImage && watermarkImage.complete) {
+                const wmWidth = canvas.width * 0.25;
+                const wmHeight = (watermarkImage.height * wmWidth) / watermarkImage.width;
+                const wmX = (canvas.width - wmWidth) / 2;
+                const wmY = (canvas.height - wmHeight) / 2;
+                
+                ctx.globalAlpha = 0.28;
+                ctx.drawImage(watermarkImage, wmX, wmY, wmWidth, wmHeight);
+              }
+              
+              // Add notebook image (bottom right)
+              if (notebookImage && notebookImage.complete) {
+                const nbWidth = canvas.width * 0.1;
+                const nbHeight = (notebookImage.height * nbWidth) / notebookImage.width;
+                const nbX = canvas.width - nbWidth - (canvas.width * 0.02);
+                const nbY = canvas.height - nbHeight - (canvas.height * 0.02);
+                
+                ctx.globalAlpha = 0.9;
+                ctx.drawImage(notebookImage, nbX, nbY, nbWidth, nbHeight);
+              }
+              
+              // Reset global alpha
+              ctx.globalAlpha = 1.0;
+              resolve();
+            } else {
+              setTimeout(checkImagesLoaded, 100);
+            }
+          };
           
-          ctx.globalAlpha = 0.9;
-          ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
-        }
-        
-        // Add watermark (center)
-        if (watermarkImage && watermarkImage.complete) {
-          const wmWidth = canvas.width * 0.25; // 25% of canvas width
-          const wmHeight = (watermarkImage.height * wmWidth) / watermarkImage.width;
-          const wmX = (canvas.width - wmWidth) / 2;
-          const wmY = (canvas.height - wmHeight) / 2;
-          
-          ctx.globalAlpha = 0.28; // 28% opacity
-          ctx.drawImage(watermarkImage, wmX, wmY, wmWidth, wmHeight);
-        }
-        
-        // Add notebook image (bottom right)
-        if (notebookImage && notebookImage.complete) {
-          const nbWidth = canvas.width * 0.1; // 10% of canvas width
-          const nbHeight = (notebookImage.height * nbWidth) / notebookImage.width;
-          const nbX = canvas.width - nbWidth - (canvas.width * 0.02); // 2% margin
-          const nbY = canvas.height - nbHeight - (canvas.height * 0.02); // 2% margin
-          
-          ctx.globalAlpha = 0.9;
-          ctx.drawImage(notebookImage, nbX, nbY, nbWidth, nbHeight);
-        }
-        
-        // Reset global alpha
-        ctx.globalAlpha = 1.0;
+          checkImagesLoaded();
+        });
       }
 
       // Generate and download ZIP
       async function generateAndDownloadZIP() {
-        if (!pdfDoc) {
+        if (!pdfData) {
           showStatus('Please upload a PDF first', 'error');
           return;
         }
 
         downloadBtn.disabled = true;
         showStatus('Generating images... This may take a moment.', 'info');
+        updateProgress(0);
 
         try {
-          // Generate images from PDF
-          const images = await generateImagesFromPDF();
-          
-          if (!images || images.length === 0) {
-            showStatus('No images were generated. Please try again.', 'error');
-            downloadBtn.disabled = false;
-            progressContainer.style.display = 'none';
-            return;
-          }
-
           // Determine filename
           let baseFilename = customFilename.value.trim();
           if (!baseFilename) {
@@ -868,20 +870,47 @@
           // Create ZIP file
           const zip = new JSZip();
           
-          // Add each image to ZIP
-          images.forEach((image, index) => {
-            const filename = `${baseFilename}-page${index + 1}.png`;
-            zip.file(filename, image.blob);
-          });
+          // Process each page
+          for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+            try {
+              // Update progress
+              updateProgress((pageNum / totalPages) * 100);
+              
+              // Convert page to image
+              const imageData = await convertPageToImage(pageNum);
+              
+              // Add to ZIP
+              const filename = `${baseFilename}-page${pageNum}.png`;
+              zip.file(filename, imageData.blob);
+              
+              showStatus(`Processed page ${pageNum} of ${totalPages}`, 'info');
+              
+            } catch (pageError) {
+              console.error(`Error processing page ${pageNum}:`, pageError);
+              // Continue with next page
+              continue;
+            }
+          }
 
-          // Generate ZIP file
+          updateProgress(100);
+          
+          // Generate ZIP if we have at least one image
+          const filesCount = Object.keys(zip.files).length;
+          if (filesCount === 0) {
+            showStatus('No images were generated. Please try again.', 'error');
+            downloadBtn.disabled = false;
+            progressContainer.style.display = 'none';
+            return;
+          }
+
+          // Generate ZIP blob
           const zipBlob = await zip.generateAsync({ type: 'blob' });
           
           // Download ZIP
           const zipFilename = `${baseFilename}-converted.zip`;
           saveAs(zipBlob, zipFilename);
           
-          showStatus(`Successfully generated ${images.length} images in ${zipFilename}`, 'success');
+          showStatus(`Successfully generated ${filesCount} images in ${zipFilename}`, 'success');
           
           // Reset progress
           setTimeout(() => {
@@ -911,6 +940,7 @@
         totalPages = 0;
         pdfFileName = '';
         pdfFileSize = 0;
+        pdfData = null;
         customFilename.value = '';
         customFilename.placeholder = 'Leave empty to use PDF filename';
       }
@@ -918,28 +948,8 @@
       // Download button click event
       downloadBtn.addEventListener('click', generateAndDownloadZIP);
 
-      // Load overlay images on startup
-      loadOverlayImages().then(() => {
-        console.log('All overlay images loaded');
-      }).catch(error => {
-        console.warn('Some overlay images failed to load:', error);
-        showStatus('Some overlay images failed to load, but you can still convert PDF', 'info');
-      });
-
       // Initialize
       resetUI();
-      
-      // Debug helper
-      window.debugPDF = () => {
-        console.log('PDF Document:', pdfDoc);
-        console.log('Current Page:', currentPageNum);
-        console.log('Total Pages:', totalPages);
-        console.log('PDF File Name:', pdfFileName);
-        console.log('Images Loaded:', imagesLoaded);
-        console.log('Logo Image:', logoImage);
-        console.log('Watermark Image:', watermarkImage);
-        console.log('Notebook Image:', notebookImage);
-      };
     });
   </script>
 </body>
